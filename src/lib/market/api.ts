@@ -3,7 +3,8 @@ import { createServerFn } from "@tanstack/react-start";
 import { markets } from "@/data/lagos";
 import { isStateId } from "@/data/nigeria";
 import { lgasIn } from "@/data/lgas";
-import { categories } from "@/data/market";
+import { categories, stallByCode } from "@/data/market";
+import { canRequestCheck, inPilot } from "@/lib/market/trust";
 import { tidyPhone } from "@/data/trade";
 import { getSql } from "@/lib/db";
 import { hashPassword, verifyPassword } from "@/lib/market/passwords";
@@ -109,6 +110,9 @@ export const registerBusiness = createServerFn({ method: "POST" })
     }
     if (!categoryIds.has(data.category as (typeof categories)[number]["id"])) {
       return { ok: false, error: "Choose what you sell." };
+    }
+    if (stallByCode(stallCode) && !inPilot(data.marketId)) {
+      return { ok: false, error: "That code is a Balogun sample. Claim it only from Balogun, or choose another code." };
     }
     if (!/^[A-Z0-9-]{2,12}$/.test(stallCode)) return { ok: false, error: "Stall code should look like BA01." };
     if (data.phone.trim() && !phone) {
@@ -254,7 +258,15 @@ export type OwnerView = {
   email: string;
   business: BusinessRow;
   products: { id: string; name: string; price_naira: number; unit: string }[];
-  enquiries: { id: string; from_name: string; from_contact: string; message: string; stall_code: string }[];
+  enquiries: {
+    id: string;
+    from_name: string;
+    from_contact: string;
+    message: string;
+    stall_code: string;
+    reply: string;
+    replied_at: string | null;
+  }[];
   checks: { kind: "cac" | "nafdac" }[];
 };
 
@@ -268,8 +280,17 @@ export const getOwner = createServerFn({ method: "GET" }).handler(async (): Prom
   const products = await sql<{ id: string; name: string; price_naira: number; unit: string }>`
     select id, name, price_naira, unit from products where business_id = ${business.id} order by created_at desc
   `;
-  const enquiries = await sql<{ id: string; from_name: string; from_contact: string; message: string; stall_code: string }>`
-    select id, from_name, from_contact, message, stall_code from enquiries
+  const enquiries = await sql<{
+    id: string;
+    from_name: string;
+    from_contact: string;
+    message: string;
+    stall_code: string;
+    reply: string;
+    replied_at: string | null;
+  }>`
+    select id, from_name, from_contact, message, stall_code, reply, replied_at::text
+    from enquiries
     where business_id = ${business.id} or stall_code = ${business.stall_code}
     order by created_at desc limit 30
   `;
@@ -321,6 +342,14 @@ export const submitEvidence = createServerFn({ method: "POST" })
     const reference = data.reference.trim();
     if (reference.length < 4) return { ok: false, error: "Add the reference number you want checked." };
     const sql = await getSql();
+    const written = await sql<{ id: string }>`
+      select id from enquiries
+      where business_id = ${business.id} or stall_code = ${business.stall_code}
+      limit 1
+    `;
+    if (!canRequestCheck(written.length)) {
+      return { ok: false, error: "A check can be requested after a buyer has written to this stall. It would stay pending, and it would not become a badge." };
+    }
     await sql`
       insert into verification_requests (id, business_id, kind, reference, status)
       values (${newId("ver")}, ${business.id}, ${data.kind}, ${reference.slice(0, 40)}, 'pending')
@@ -330,4 +359,28 @@ export const submitEvidence = createServerFn({ method: "POST" })
       await sql`update businesses set identity_status = ${identity} where id = ${business.id}`;
     }
     return { ok: true, data: { status: "pending" as const } };
+  });
+
+export const replyToEnquiry = createServerFn({ method: "POST" })
+  .inputValidator((data: { id: string; reply: string }) => data)
+  .handler(async ({ data }): Promise<Result<{ id: string }>> => {
+    const accountId = await readAccountId();
+    if (!accountId) return { ok: false, error: "Log in first." };
+    const business = await businessByAccount(accountId);
+    if (!business) return { ok: false, error: "Register a business first." };
+    const reply = data.reply.trim();
+    if (reply.length < 2) return { ok: false, error: "Write the answer." };
+    const sql = await getSql();
+    const rows = await sql<{ id: string }>`
+      select id from enquiries
+      where id = ${data.id}
+        and (business_id = ${business.id} or stall_code = ${business.stall_code})
+    `;
+    if (!rows[0]) return { ok: false, error: "That enquiry is not yours." };
+    await sql`
+      update enquiries
+      set reply = ${reply.slice(0, 800)}, replied_at = now()
+      where id = ${data.id}
+    `;
+    return { ok: true, data: { id: data.id } };
   });

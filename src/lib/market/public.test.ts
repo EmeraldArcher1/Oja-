@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { identityAfterPayment, nextIdentityStatus, toPublicBusiness } from "./public.ts";
-import { anyTierVerified, feeCharged, sponsorMark, tierBoard } from "./trust.ts";
+import { anyTierVerified, canRequestCheck, feeCharged, inPilot, sponsorMark, tierBoard } from "./trust.ts";
 import { hashPassword, verifyPassword } from "./passwords.ts";
 
 const row = {
@@ -18,6 +18,13 @@ const row = {
   plan: "starter",
   identity_status: "unverified" as const,
 };
+
+test("the pilot is Balogun, and a check waits for an enquiry", () => {
+  assert.equal(inPilot("balogun"), true);
+  assert.equal(inPilot("kano"), false);
+  assert.equal(canRequestCheck(0), false);
+  assert.equal(canRequestCheck(1), true);
+});
 
 test("hides the owner phone unless they publish it", () => {
   assert.equal(toPublicBusiness(row).phone, null);

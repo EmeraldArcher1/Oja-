@@ -105,6 +105,7 @@ function WalkPage() {
           <p className="mt-4 text-sm font-medium text-indigo">{stall.business}</p>
           <h1 className="font-display text-5xl text-ink">{stall.code}</h1>
           <p className="mt-2 text-lg text-ink">{t(ui.thisIsIt, lang)}</p>
+          <p className="mt-2 text-sm text-muted">Example text. Oja has not visited this shutter.</p>
           <p className="mt-2 text-muted">{t(stall.shutter, lang)}</p>
           <p className="mt-2 text-sm text-muted">{spokenCode(stall)}</p>
           <div className="mt-5 grid gap-2">

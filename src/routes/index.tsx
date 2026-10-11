@@ -13,6 +13,7 @@ import {
   type CategoryId,
 } from "@/data/market";
 import { listPublicBusinesses, type PublicBusiness } from "@/lib/market/api";
+import { inPilot } from "@/lib/market/trust";
 import { useMarket } from "@/lib/market-store";
 
 export const Route = createFileRoute("/")({
@@ -25,7 +26,6 @@ function HomePage() {
   const setHere = useMarket((state) => state.setHere);
   const saved = useMarket((state) => state.saved);
   const toggleSaved = useMarket((state) => state.toggleSaved);
-  const localStalls = useMarket((state) => state.registered);
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<CategoryId | "all">("all");
   const [whereOpen, setWhereOpen] = useState(false);
@@ -38,48 +38,47 @@ function HomePage() {
   const results = useMemo(() => {
     const marketId = query.trim() ? undefined : "balogun";
     const base = filterStalls(query, category, marketId);
-    const ids = new Set(base.map((stall) => stall.id));
-    const mine = localStalls.filter((stall) => {
-      if (ids.has(stall.id)) return false;
-      const home = stall.marketId ?? "balogun";
-      if (marketId && home !== marketId) return false;
-      if (category !== "all" && stall.category !== category) return false;
-      return true;
-    });
-    return [...mine, ...base].sort((a, b) => {
+    return base.sort((a, b) => {
       if (marketId) return minutesBetween(hereId, a) - minutesBetween(hereId, b);
       return a.business.localeCompare(b.business);
     });
-  }, [query, category, hereId, localStalls]);
+  }, [query, category, hereId]);
+
+  const pilotShops = useMemo(() => registered.filter((business) => inPilot(business.marketId)), [registered]);
+  const claimed = useMemo(
+    () => new Set(pilotShops.map((business) => business.stallCode.toUpperCase())),
+    [pilotShops],
+  );
 
   const businesses = useMemo(() => {
     const words = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
-    return registered.filter((business) => {
+    return pilotShops.filter((business) => {
       if (category !== "all" && business.category !== category) return false;
       if (words.length === 0) return true;
       const hay = `${business.name} ${business.trader} ${business.stallCode} ${business.about} ${business.category}`.toLowerCase();
       return words.every((word) => hay.includes(word));
     });
-  }, [registered, query, category]);
+  }, [pilotShops, query, category]);
 
   const here = placeById(hereId);
 
   return (
     <main className="mx-auto grid w-full max-w-6xl px-4 py-5 lg:grid-cols-5 lg:gap-8 lg:py-8">
       <div className="min-w-0 lg:col-span-3">
-        <p className="text-sm font-medium text-indigo">Nigeria</p>
-        <h1 className="mt-1 font-display text-4xl text-ink sm:text-5xl">A pilot, not a live market.</h1>
+        <p className="text-sm font-medium text-indigo">Balogun pilot</p>
+        <h1 className="mt-1 font-display text-4xl text-ink sm:text-5xl">One market first.</h1>
         <p className="mt-2 max-w-xl text-muted">{t(ui.prototype, lang)}</p>
         <p className="mt-2 max-w-xl text-sm text-muted">
-          Sign-up works on this pilot. It does not put a shop in front of buyers around the world.
-          Verification is not for sale, and paying would not create a badge. No fee is charged.
+          The working pilot is Balogun. Other states are names of places, not open shops. A sample stall
+          stays a sample until a Balogun trader signs up with that exact code. Joining is free. A check
+          can be requested only after a buyer has written, and it does not become a badge. No fee is charged.
         </p>
         <ol className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
           {[
-            ["1", "Pick a state"],
-            ["2", "Locate the business"],
-            ["3", "Send an enquiry"],
-            ["4", "Verification is separate"],
+            ["1", "Walk a Balogun sample"],
+            ["2", "Sign up, free"],
+            ["3", "Answer an enquiry"],
+            ["4", "Count the answers"],
           ].map(([step, label]) => (
             <li key={step} className="rounded-2xl border border-line bg-sheet px-3 py-3">
               <span className="font-display text-2xl leading-none text-clay">{step}</span>
@@ -147,9 +146,11 @@ function HomePage() {
         </div>
 
         <section className="mt-6">
-          <h2 className="font-display text-3xl text-ink">Registered businesses</h2>
+          <h2 className="font-display text-3xl text-ink">Balogun businesses</h2>
           {businesses.length === 0 ? (
-            <p className="mt-2 text-sm text-muted">None yet. A registered profile appears here. Sample stalls below are not registered.</p>
+            <p className="mt-2 text-sm text-muted">
+              None yet. A shop appears here only after someone signs up for Balogun. Samples below are not shops.
+            </p>
           ) : (
             <ul className="mt-3 grid gap-2">
               {businesses.map((business) => (
@@ -172,10 +173,12 @@ function HomePage() {
         </section>
 
         <h2 className="mt-6 text-sm font-semibold tracking-wide text-muted uppercase">
-          {results.length} sample {t(ui.stalls, lang)}
+          {results.filter((stall) => !claimed.has(stall.code.toUpperCase())).length} sample {t(ui.stalls, lang)}
         </h2>
         <ul className="mt-3 grid gap-2">
-          {results.map((stall) => (
+          {results
+            .filter((stall) => !claimed.has(stall.code.toUpperCase()))
+            .map((stall) => (
             <li key={stall.id}>
               <StallCard
                 stall={stall}

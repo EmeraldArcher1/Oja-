@@ -30,7 +30,8 @@ import {
   type Job,
 } from "@/data/trade";
 import { cn } from "@/lib/cn";
-import { sendEnquiry } from "@/lib/market/api";
+import { getPublicShop, sendEnquiry } from "@/lib/market/api";
+import { inPilot } from "@/lib/market/trust";
 import { useMarket } from "@/lib/market-store";
 
 export const Route = createFileRoute("/stall/$code")({
@@ -48,6 +49,7 @@ function StallPage() {
   const override = useMarket((state) => (stall ? state.overrides[stall.id] : undefined));
   const placeJob = useMarket((state) => state.placeJob);
   const knownBuyer = useMarket((state) => state.buyer);
+  const [claim, setClaim] = useState<string | null | undefined>(undefined);
   const setBuyer = useMarket((state) => state.setBuyer);
   const [copied, setCopied] = useState(false);
   const [shared, setShared] = useState(false);
@@ -67,6 +69,15 @@ function StallPage() {
     setSeeded(true);
   }, [knownBuyer, seeded]);
 
+  useEffect(() => {
+    if (!stall) return;
+    void getPublicShop({ data: { stallCode: stall.code } })
+      .then((shop) => {
+        setClaim(shop && inPilot(shop.business.marketId) ? shop.business.name : null);
+      })
+      .catch(() => setClaim(null));
+  }, [stall]);
+
   if (!stall) {
     return (
       <main className="mx-auto max-w-xl px-4 py-10">
@@ -79,6 +90,25 @@ function StallPage() {
   }
 
   const found = stall;
+  if (claim === undefined) return <main className="px-4 py-8 text-muted">Loading</main>;
+  if (claim) {
+    return (
+      <main className="mx-auto max-w-xl px-4 py-8">
+        <p className="text-sm font-medium text-indigo">Sample replaced</p>
+        <h1 className="mt-1 font-display text-4xl text-ink">This example is no longer the shop.</h1>
+        <p className="mt-3 text-muted">
+          {stall.business} was a sample. {claim} signed up with code {stall.code}. The example directions, prices, and notes are not that business.
+        </p>
+        <Link
+          to="/shop/$code"
+          params={{ code: stall.code }}
+          className="mt-4 inline-flex h-12 items-center rounded-2xl bg-clay px-4 text-sm font-semibold text-sheet"
+        >
+          Open the registered shop
+        </Link>
+      </main>
+    );
+  }
 
   const block = placeById(stall.block);
   const market = marketById(stall.marketId ?? "balogun");
@@ -435,6 +465,7 @@ function StallPage() {
 
       <section className="mt-8">
         <h2 className="font-display text-3xl text-ink">{t(ui.how, lang)}</h2>
+        <p className="mt-2 text-sm text-muted">Example text. Oja has not visited this shutter.</p>
         <p className="mt-2 text-ink">{t(stall.shutter, lang)}</p>
         {market.lanes ? (
           <Link

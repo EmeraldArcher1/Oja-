@@ -24,6 +24,18 @@ export const trustTiers: { id: TrustTier; title: string; detail: string }[] = [
   },
 ];
 
+/** The only market this pilot operates. Other places are names, not open shops. */
+export const PILOT_MARKET_ID = "balogun";
+
+export function inPilot(marketId: string): boolean {
+  return marketId === PILOT_MARKET_ID;
+}
+
+/** A check can be queued only after a buyer has written. It still does not verify anyone. */
+export function canRequestCheck(enquiryCount: number): boolean {
+  return enquiryCount > 0;
+}
+
 /** No tier can become verified in this build. Pending is a queue, not a badge. */
 export function tierBoard(input: { cacPending: boolean; nafdacPending: boolean }): { id: TrustTier; state: TrustState }[] {
   return [

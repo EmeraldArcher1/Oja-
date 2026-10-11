@@ -138,9 +138,14 @@ function JoinPage() {
           </label>
         ) : (
           <p className="text-sm text-muted">
-            Located in {stateById(stateId)?.market}, {stateById(stateId)?.city}. The pin is the city, not a stall door.
+            You can record {stateById(stateId)?.name}. Buyers on the home page will not see it. The working pilot is Balogun only.
           </p>
         )}
+        {stateId === "lagos" && marketId !== "balogun" ? (
+          <p className="text-sm text-muted">
+            This Lagos market is not the pilot. The shop will be saved and kept off the Balogun list.
+          </p>
+        ) : null}
         <label className="text-sm font-medium">
           {text.product}
           <select

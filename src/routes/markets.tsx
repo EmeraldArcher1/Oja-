@@ -31,9 +31,7 @@ function MarketsPage() {
       <p className="text-sm font-medium text-indigo">Oja Naija</p>
       <h1 className="mt-1 font-display text-4xl text-ink sm:text-5xl">Every state.</h1>
       <p className="mt-2 max-w-xl text-muted">
-        36 states, the FCT, and 774 local governments are named so a business can say where it is.
-        That is a directory of places. It is not proof that a shop there has joined, and it does not
-        send buyers to them. Verification is not for sale.
+        The working pilot is Balogun Market. The other names are places. A business saved outside Balogun is not shown as an open shop.
       </p>
       <input
         value={query}

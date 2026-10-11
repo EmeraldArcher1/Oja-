@@ -5,6 +5,7 @@ import { stateById } from "@/data/nigeria";
 import { categoryLabel, categories, naira, type CategoryId } from "@/data/market";
 import { getPublicShop, sendEnquiry, type PublicBusiness } from "@/lib/market/api";
 import { showPhone } from "@/data/trade";
+import { inPilot } from "@/lib/market/trust";
 
 export const Route = createFileRoute("/shop/$code")({
   component: ShopPage,
@@ -93,6 +94,11 @@ function ShopBody({
       <p className="mt-2 text-sm text-muted">
         Person, stall visit, CAC, and NAFDAC are separate. None of them is a badge on this page.
       </p>
+      {inPilot(shop.marketId) ? null : (
+        <p className="mt-3 rounded-2xl border border-line bg-sheet px-3 py-3 text-sm text-ink">
+          Saved outside the Balogun pilot. This shop is not shown on the home page, and buyers are not sent here.
+        </p>
+      )}
       {shop.about ? <p className="mt-3 text-ink">{shop.about}</p> : null}
       <p className="mt-3 text-sm text-muted">
         {shop.phone ? `Published number ${showPhone(shop.phone)}` : "The owner has not published a phone number."}

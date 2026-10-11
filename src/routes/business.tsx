@@ -8,12 +8,13 @@ import {
   getOwner,
   listPlans,
   logoutBusiness,
+  replyToEnquiry,
   setPhonePublic,
   submitEvidence,
   type OwnerView,
 } from "@/lib/market/api";
 import { useMarket } from "@/lib/market-store";
-import { tierBoard, trustTiers } from "@/lib/market/trust";
+import { canRequestCheck, tierBoard, trustTiers } from "@/lib/market/trust";
 
 export const Route = createFileRoute("/business")({
   component: BusinessPage,
@@ -29,6 +30,8 @@ function BusinessPage() {
   const [reference, setReference] = useState("");
   const [kind, setKind] = useState<"cac" | "nafdac">("cac");
   const [error, setError] = useState("");
+  const [reply, setReply] = useState("");
+  const [replyId, setReplyId] = useState("");
   const [note, setNote] = useState("");
 
   async function load() {
@@ -85,6 +88,17 @@ function BusinessPage() {
       <p className="mt-2 text-muted">
         {owner.business.stall_code} · {owner.business.identity_status === "pending" ? "Check pending" : "Not verified"}
       </p>
+      <p className="mt-3 grid grid-cols-2 gap-2 text-sm">
+        <span className="rounded-2xl border border-line bg-sheet px-3 py-3">
+          <span className="block text-muted">Enquiries</span>
+          <span className="font-display text-3xl text-ink">{owner.enquiries.length}</span>
+        </span>
+        <span className="rounded-2xl border border-line bg-sheet px-3 py-3">
+          <span className="block text-muted">Answered</span>
+          <span className="font-display text-3xl text-ink">{owner.enquiries.filter((item) => item.reply).length}</span>
+        </span>
+      </p>
+      <p className="mt-2 text-sm text-muted">Answers are the number that matters. Sign-ups are not counted here.</p>
       <p className="mt-2 text-sm">
         {text.hidden}: {showPhone(owner.business.phone)}
       </p>
@@ -150,6 +164,38 @@ function BusinessPage() {
               <p className="font-semibold">{item.from_name}</p>
               <p className="text-muted">{item.from_contact}</p>
               <p className="mt-1 whitespace-pre-wrap">{item.message}</p>
+              {item.reply ? <p className="mt-2 text-ink">Answer: {item.reply}</p> : null}
+              {replyId === item.id ? (
+                <form
+                  onSubmit={(event) => {
+                    event.preventDefault();
+                    void replyToEnquiry({ data: { id: item.id, reply } }).then((result) => {
+                      if (!result.ok) {
+                        setError(result.error);
+                        return;
+                      }
+                      setReply("");
+                      setReplyId("");
+                      void load();
+                    });
+                  }}
+                  className="mt-2 grid gap-2"
+                >
+                  <input
+                    value={reply}
+                    onChange={(event) => setReply(event.target.value)}
+                    placeholder="Your answer"
+                    className="h-11 rounded-2xl border border-line bg-paper px-3"
+                  />
+                  <button type="submit" className="h-10 rounded-full bg-indigo px-3 text-sm font-semibold text-sheet">
+                    Save the answer
+                  </button>
+                </form>
+              ) : (
+                <button type="button" onClick={() => { setReplyId(item.id); setReply(item.reply); }} className="mt-2 text-sm font-semibold text-indigo">
+                  {item.reply ? "Change the answer" : "Answer"}
+                </button>
+              )}
             </li>
           ))}
         </ul>
@@ -157,6 +203,9 @@ function BusinessPage() {
       <form onSubmit={(event) => void evidence(event)} className="mt-8 rounded-2xl border border-line bg-sheet p-4">
         <h2 className="font-display text-3xl">{text.evidence}</h2>
         <p className="mt-2 text-sm text-muted">{text.evidenceNote}</p>
+        {canRequestCheck(owner.enquiries.length) ? null : (
+          <p className="mt-2 text-sm text-ink">A check stays closed until a buyer has written to this stall.</p>
+        )}
         <p className="mt-2 text-sm text-muted">CAC is a business-identity check. NAFDAC is a product-registration check. Neither one verifies the goods in hand, and neither one is an official result.</p>
         <div className="mt-3 flex gap-2">
           {(["cac", "nafdac"] as const).map((item) => (
@@ -176,7 +225,11 @@ function BusinessPage() {
           placeholder="RC or NAFDAC number"
           className="mt-3 h-12 w-full rounded-2xl border border-line bg-paper px-3"
         />
-        <button type="submit" className="mt-3 h-11 rounded-full border border-line px-4 text-sm font-semibold">
+        <button
+          type="submit"
+          disabled={!canRequestCheck(owner.enquiries.length)}
+          className="mt-3 h-11 rounded-full border border-line px-4 text-sm font-semibold disabled:opacity-50"
+        >
           {text.sendEvidence}
         </button>
         {note ? <p className="mt-2 text-sm text-indigo">{note}</p> : null}

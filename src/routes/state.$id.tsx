@@ -39,8 +39,9 @@ function StatePage() {
       </p>
       <p className="mt-3 max-w-xl text-sm text-ink">{state.note}</p>
       <p className="mt-2 max-w-xl text-sm text-muted">
-        These names are places on a map. A business can register against one of them in this pilot.
-        Registration does not publish the shop to buyers abroad, and it is not a verification.
+        {state.id === "lagos"
+          ? "Balogun is the only market in this pilot. The other Lagos names are places."
+          : "This state is named so a business can say where it is. It is not part of the working pilot. The pilot is Balogun."}
       </p>
       <h2 className="mt-6 font-display text-3xl text-ink">Markets</h2>
       <ul className="mt-3 grid gap-2">

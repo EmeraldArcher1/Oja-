@@ -63,6 +63,7 @@ const copy = {
       "It does not take NIN or BVN.",
       "It does not move money. There is no live payment or refund.",
       "A sample listing is not a verified business.",
+      "A stall saved on this phone does not replace a sample. Sign up with that stall code to do that.",
     ],
     helps: "How the day gets simpler",
     helpItems: [
@@ -131,6 +132,7 @@ const copy = {
       "E no collect NIN or BVN.",
       "E no move money. No live payment or refund.",
       "Sample listing no be verified business.",
+      "Stall wey you save for this phone no replace sample. Sign up with the stall code.",
     ],
     helps: "How the day go easy",
     helpItems: [
