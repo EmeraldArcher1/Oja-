@@ -18,6 +18,7 @@ import { Route as MapRouteImport } from './routes/map'
 import { Route as MarketsRouteImport } from './routes/markets'
 import { Route as OpenRouteImport } from './routes/open'
 import { Route as OrdersRouteImport } from './routes/orders'
+import { Route as Posh9jaRouteImport } from './routes/posh9ja'
 import { Route as SavedRouteImport } from './routes/saved'
 import { Route as StartRouteImport } from './routes/start'
 import { Route as MarketIdRouteImport } from './routes/market.$id'
@@ -71,6 +72,11 @@ const OrdersRoute = OrdersRouteImport.update({
   path: '/orders',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Posh9jaRoute = Posh9jaRouteImport.update({
+  id: '/posh9ja',
+  path: '/posh9ja',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SavedRoute = SavedRouteImport.update({
   id: '/saved',
   path: '/saved',
@@ -117,6 +123,7 @@ export interface FileRoutesByFullPath {
   '/markets': typeof MarketsRoute
   '/open': typeof OpenRoute
   '/orders': typeof OrdersRoute
+  '/posh9ja': typeof Posh9jaRoute
   '/saved': typeof SavedRoute
   '/start': typeof StartRoute
   '/market/$id': typeof MarketIdRoute
@@ -135,6 +142,7 @@ export interface FileRoutesByTo {
   '/markets': typeof MarketsRoute
   '/open': typeof OpenRoute
   '/orders': typeof OrdersRoute
+  '/posh9ja': typeof Posh9jaRoute
   '/saved': typeof SavedRoute
   '/start': typeof StartRoute
   '/market/$id': typeof MarketIdRoute
@@ -154,6 +162,7 @@ export interface FileRoutesById {
   '/markets': typeof MarketsRoute
   '/open': typeof OpenRoute
   '/orders': typeof OrdersRoute
+  '/posh9ja': typeof Posh9jaRoute
   '/saved': typeof SavedRoute
   '/start': typeof StartRoute
   '/market/$id': typeof MarketIdRoute
@@ -174,6 +183,7 @@ export interface FileRouteTypes {
     | '/markets'
     | '/open'
     | '/orders'
+    | '/posh9ja'
     | '/saved'
     | '/start'
     | '/market/$id'
@@ -192,6 +202,7 @@ export interface FileRouteTypes {
     | '/markets'
     | '/open'
     | '/orders'
+    | '/posh9ja'
     | '/saved'
     | '/start'
     | '/market/$id'
@@ -210,6 +221,7 @@ export interface FileRouteTypes {
     | '/markets'
     | '/open'
     | '/orders'
+    | '/posh9ja'
     | '/saved'
     | '/start'
     | '/market/$id'
@@ -229,6 +241,7 @@ export interface RootRouteChildren {
   MarketsRoute: typeof MarketsRoute
   OpenRoute: typeof OpenRoute
   OrdersRoute: typeof OrdersRoute
+  Posh9jaRoute: typeof Posh9jaRoute
   SavedRoute: typeof SavedRoute
   StartRoute: typeof StartRoute
   MarketIdRoute: typeof MarketIdRoute
@@ -303,6 +316,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OrdersRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/posh9ja': {
+      id: '/posh9ja'
+      path: '/posh9ja'
+      fullPath: '/posh9ja'
+      preLoaderRoute: typeof Posh9jaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/saved': {
       id: '/saved'
       path: '/saved'
@@ -365,6 +385,7 @@ const rootRouteChildren: RootRouteChildren = {
   MarketsRoute: MarketsRoute,
   OpenRoute: OpenRoute,
   OrdersRoute: OrdersRoute,
+  Posh9jaRoute: Posh9jaRoute,
   SavedRoute: SavedRoute,
   StartRoute: StartRoute,
   MarketIdRoute: MarketIdRoute,

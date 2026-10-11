@@ -4,6 +4,12 @@ The working pilot is Balogun Market. Other states and local governments are name
 
 This is not a live marketplace. Sample stalls are examples. Registration does not send the shop to buyers around the world.
 
+## Launch
+
+Not ready for an official launch. The Balogun stalls are samples. Payments, rider booking, CAC, and NAFDAC are not connected. A public launch would present examples as shops.
+
+POSH9JA EXPORT AND LOGISTICS is listed at `/posh9ja` as the founder’s company, with the office, email, and phone numbers the business already publishes. It is not verified, and it is not a Balogun stall.
+
 ## What works
 
 - Sign up and log in for a business, separate from the preview account.

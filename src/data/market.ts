@@ -511,7 +511,7 @@ export const stalls: Stall[] = [
     languages: ["Yoruba", "English", "Pidgin"],
     hours: "Mon–Sat, 8am–6pm",
     photo: "/market/lace.jpg",
-    whatsapp: "2348113657972",
+    whatsapp: "2348113657987",
     shutter: {
       en: "Third wooden shutter on the left, with a blue plastic chair outside. A1-04 is painted in white on the frame. Ask for Kemi.",
       pg: "Third wooden shutter for your left. Blue plastic chair dey outside. A1-04 dey paint with white for the frame. Ask for Kemi.",

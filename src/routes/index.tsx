@@ -93,6 +93,9 @@ function HomePage() {
           <Link to="/markets" className="inline-flex h-11 items-center text-sm font-semibold text-indigo">
             36 states and the FCT
           </Link>
+          <Link to="/posh9ja" className="inline-flex h-11 items-center text-sm font-semibold text-indigo">
+            The company behind Oja
+          </Link>
         </div>
 
         <div className="mt-4 w-full min-w-0 overflow-x-auto">
