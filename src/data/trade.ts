@@ -12,6 +12,7 @@ export type StallOverride = {
   catalogue?: CatalogueItem[];
   verify?: VerifyState;
   slip?: string;
+  publishPhone?: boolean;
 };
 
 export type JobMode = "pickup" | "rider";
@@ -102,6 +103,7 @@ export type LiveStall = Stall & {
   lat: number;
   lng: number;
   verified: VerifyState;
+  phonePublic: boolean;
   movedNote?: string;
 };
 
@@ -116,6 +118,7 @@ export function presentStall(stall: Stall, override?: StallOverride): LiveStall 
     lat: override?.lat ?? pin.lat,
     lng: override?.lng ?? pin.lng,
     verified: override?.verify === "pending" || stall.verified === "pending" ? "pending" : "sample",
+    phonePublic: Boolean(override?.publishPhone),
     movedNote: override?.movedNote,
   };
 }

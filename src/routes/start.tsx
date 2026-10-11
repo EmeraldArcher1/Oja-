@@ -48,15 +48,15 @@ const copy = {
       {
         n: "7",
         title: "Confirm, then hand over",
-        body: "The order arrives on WhatsApp and on Orders. You confirm the goods. Posh9ja notes the parcel and who received it. You keep the price minus 2%. The delivery quote is the buyer’s, not yours.",
+        body: "An enquiry can be saved on this pilot. It does not open WhatsApp, book a rider, or take a fee. You keep the whole sample price, because Oja does not collect it.",
       },
     ],
     does: "What it does now",
     doesItems: [
-      "Shows the stall code when the market has no street number.",
-      "Sends one WhatsApp message with the goods, the total, and the drop-off.",
-      "Keeps Oja’s 2% separate from the Posh9ja delivery quote.",
-      "Writes the commission only after delivery.",
+      "Saves an enquiry against the stall code when someone places a sample order.",
+      "Hides the phone number unless you publish it.",
+      "Shows a delivery quote on screen. It does not book a rider.",
+      "Does not take a fee.",
     ],
     not: "What it does not do",
     notItems: [
@@ -116,15 +116,15 @@ const copy = {
       {
         n: "7",
         title: "Confirm, then give am",
-        body: "The order go reach WhatsApp and Orders. You confirm the goods. Posh9ja go write the parcel and who collect am. You keep the price minus 2%. Delivery money na the buyer own, no be your own.",
+        body: "Enquiry fit save for this pilot. E no open WhatsApp, e no book rider, and e no take fee. You keep the sample price, because Oja no collect am.",
       },
     ],
     does: "Wetin e dey do now",
     doesItems: [
-      "E show stall code when the market no get street number.",
-      "E send one WhatsApp message with the goods, the total, and where to drop am.",
-      "Oja 2% different from Posh9ja delivery money.",
-      "E write the commission only after delivery.",
+      "E save enquiry for the stall code when person place sample order.",
+      "E hide the phone number until you publish am.",
+      "E show delivery quote for screen. E no book rider.",
+      "E no take fee.",
     ],
     not: "Wetin e no dey do",
     notItems: [

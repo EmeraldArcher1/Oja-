@@ -4,6 +4,7 @@ export type PublicBusiness = {
   name: string;
   trader: string;
   marketId: string;
+  lga: string;
   category: string;
   about: string;
   stallCode: string;
@@ -17,6 +18,7 @@ export function toPublicBusiness(row: {
   name: string;
   trader: string;
   market_id: string;
+  lga?: string;
   category: string;
   about: string;
   stall_code: string;
@@ -30,6 +32,7 @@ export function toPublicBusiness(row: {
     name: row.name,
     trader: row.trader,
     marketId: row.market_id,
+    lga: row.lga ?? "",
     category: row.category,
     about: row.about,
     stallCode: row.stall_code,

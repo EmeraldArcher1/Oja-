@@ -65,10 +65,8 @@ export const useMarket = create<MarketState>()(
         const prev = get().jobs.find((job) => job.id === id);
         if (!prev || jobDone(prev)) return;
         const next = { ...prev, ...patch };
-        const add = !jobDone(prev) && jobDone(next) ? prev.token : 0;
         set({
           jobs: get().jobs.map((job) => (job.id === id ? next : job)),
-          tokens: get().tokens + add,
         });
       },
       setBuyer: (buyer) => set({ buyer }),

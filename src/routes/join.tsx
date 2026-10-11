@@ -1,12 +1,20 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
+import { z } from "zod";
 import { accountCopy } from "@/data/account-copy";
 import { markets } from "@/data/lagos";
 import { categories, type CategoryId } from "@/data/market";
+import { lgasIn } from "@/data/lgas";
+import { stateById, states } from "@/data/nigeria";
 import { registerBusiness } from "@/lib/market/api";
 import { useMarket } from "@/lib/market-store";
 
+const searchSchema = z.object({
+  state: z.string().optional(),
+});
+
 export const Route = createFileRoute("/join")({
+  validateSearch: searchSchema,
   component: JoinPage,
 });
 
@@ -14,6 +22,8 @@ function JoinPage() {
   const lang = useMarket((state) => state.lang);
   const text = accountCopy[lang];
   const navigate = useNavigate();
+  const search = Route.useSearch();
+  const initialState = stateById(search.state ?? "") ? search.state! : "lagos";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
@@ -21,6 +31,8 @@ function JoinPage() {
   const [phone, setPhone] = useState("");
   const [stallCode, setStallCode] = useState("");
   const [about, setAbout] = useState("");
+  const [stateId, setStateId] = useState(initialState);
+  const [lga, setLga] = useState("");
   const [marketId, setMarketId] = useState("balogun");
   const [category, setCategory] = useState<CategoryId>("food");
   const [error, setError] = useState("");
@@ -31,7 +43,18 @@ function JoinPage() {
     setPending(true);
     setError("");
     const result = await registerBusiness({
-      data: { email, password, name, trader, phone, stallCode, about, marketId, category },
+      data: {
+        email,
+        password,
+        name,
+        trader,
+        phone,
+        stallCode,
+        about,
+        marketId: stateId === "lagos" ? marketId : stateId,
+        lga,
+        category,
+      },
     });
     setPending(false);
     if (!result.ok) {
@@ -67,19 +90,57 @@ function JoinPage() {
         <Field label={text.business} value={name} onChange={setName} />
         <Field label={text.yourName} value={trader} onChange={setTrader} />
         <label className="text-sm font-medium">
-          Market
+          State
           <select
-            value={marketId}
-            onChange={(event) => setMarketId(event.target.value)}
+            value={stateId}
+            onChange={(event) => {
+              setStateId(event.target.value);
+              setLga("");
+            }}
             className="mt-1 h-12 w-full rounded-2xl border border-line bg-sheet px-3"
           >
-            {markets.map((market) => (
-              <option key={market.id} value={market.id}>
-                {market.name}
+            {states.map((state) => (
+              <option key={state.id} value={state.id}>
+                {state.name}
               </option>
             ))}
           </select>
         </label>
+        <label className="text-sm font-medium">
+          Local government
+          <select
+            value={lga}
+            onChange={(event) => setLga(event.target.value)}
+            className="mt-1 h-12 w-full rounded-2xl border border-line bg-sheet px-3"
+          >
+            <option value="">Choose</option>
+            {lgasIn(stateId).map((name) => (
+              <option key={name} value={name}>
+                {name}
+              </option>
+            ))}
+          </select>
+        </label>
+        {stateId === "lagos" ? (
+          <label className="text-sm font-medium">
+            Lagos market
+            <select
+              value={marketId}
+              onChange={(event) => setMarketId(event.target.value)}
+              className="mt-1 h-12 w-full rounded-2xl border border-line bg-sheet px-3"
+            >
+              {markets.map((market) => (
+                <option key={market.id} value={market.id}>
+                  {market.name}
+                </option>
+              ))}
+            </select>
+          </label>
+        ) : (
+          <p className="text-sm text-muted">
+            Located in {stateById(stateId)?.market}, {stateById(stateId)?.city}. The pin is the city, not a stall door.
+          </p>
+        )}
         <label className="text-sm font-medium">
           {text.product}
           <select

@@ -13,6 +13,7 @@ import {
   type OwnerView,
 } from "@/lib/market/api";
 import { useMarket } from "@/lib/market-store";
+import { tierBoard, trustTiers } from "@/lib/market/trust";
 
 export const Route = createFileRoute("/business")({
   component: BusinessPage,
@@ -121,6 +122,26 @@ function BusinessPage() {
         ))}
       </ul>
       <section className="mt-8">
+        <h2 className="font-display text-3xl">Trust checks</h2>
+        <p className="mt-2 text-sm text-muted">Paying for a plan or an advert cannot pass any of these.</p>
+        <ul className="mt-3 grid gap-2">
+          {tierBoard({
+            cacPending: owner.checks.some((item) => item.kind === "cac"),
+            nafdacPending: owner.checks.some((item) => item.kind === "nafdac"),
+          }).map((tier) => {
+            const copy = trustTiers.find((item) => item.id === tier.id);
+            return (
+              <li key={tier.id} className="rounded-2xl border border-line bg-sheet px-3 py-3 text-sm">
+                <p className="font-semibold">
+                  {copy?.title} · {tier.state === "pending" ? "Pending, not verified" : "Not checked"}
+                </p>
+                <p className="text-muted">{copy?.detail}</p>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+      <section className="mt-8">
         <h2 className="font-display text-3xl">{text.enquiries}</h2>
         {owner.enquiries.length === 0 ? <p className="mt-2 text-sm text-muted">{text.noEnquiries}</p> : null}
         <ul className="mt-3 grid gap-2">
@@ -162,6 +183,10 @@ function BusinessPage() {
       </form>
       <section className="mt-8">
         <h2 className="font-display text-3xl">{text.plans}</h2>
+        <p className="mt-2 text-sm text-muted">
+          A plan on this list cannot be bought. Sign-up does not mean buyers are already looking for you.
+          A verification check can be saved as pending. It does not become a badge.
+        </p>
         <ul className="mt-3 grid gap-2">
           {plans.map((plan) => (
             <li key={plan.code} className="rounded-2xl border border-line bg-sheet px-3 py-3 text-sm">

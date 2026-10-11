@@ -34,7 +34,7 @@ type AccountCopy = {
 
 const en: AccountCopy = {
   joinTitle: "Register the business",
-  joinLede: "Free Starter. Your mobile stays hidden unless you choose to publish it. Registration is not verification.",
+  joinLede: "Free on this pilot. Your mobile stays hidden unless you publish it. Signing up is not verification, and it does not put the shop in front of buyers yet.",
   loginTitle: "Log in",
   email: "Email",
   password: "Password",

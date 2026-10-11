@@ -67,16 +67,19 @@ function HomePage() {
   return (
     <main className="mx-auto grid w-full max-w-6xl px-4 py-5 lg:grid-cols-5 lg:gap-8 lg:py-8">
       <div className="min-w-0 lg:col-span-3">
-        <p className="text-sm font-medium text-indigo">Lagos</p>
-        <h1 className="mt-1 font-display text-4xl text-ink sm:text-5xl">Find the market. Then the stall.</h1>
+        <p className="text-sm font-medium text-indigo">Nigeria</p>
+        <h1 className="mt-1 font-display text-4xl text-ink sm:text-5xl">A pilot, not a live market.</h1>
         <p className="mt-2 max-w-xl text-muted">{t(ui.prototype, lang)}</p>
-        <p className="mt-2 max-w-xl text-sm text-muted">No sponsored results. Advertising is not for sale.</p>
+        <p className="mt-2 max-w-xl text-sm text-muted">
+          Sign-up works on this pilot. It does not put a shop in front of buyers around the world.
+          Verification is not for sale, and paying would not create a badge. No fee is charged.
+        </p>
         <ol className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
           {[
-            ["1", "Pick a market"],
-            ["2", "Add the goods"],
+            ["1", "Pick a state"],
+            ["2", "Locate the business"],
             ["3", "Send an enquiry"],
-            ["4", "The trader confirms"],
+            ["4", "Verification is separate"],
           ].map(([step, label]) => (
             <li key={step} className="rounded-2xl border border-line bg-sheet px-3 py-3">
               <span className="font-display text-2xl leading-none text-clay">{step}</span>
@@ -88,8 +91,8 @@ function HomePage() {
           <Link to="/join" className="inline-flex h-11 items-center text-sm font-semibold text-clay">
             Sign up
           </Link>
-          <Link to="/login" className="inline-flex h-11 items-center text-sm font-semibold text-indigo">
-            Log in
+          <Link to="/markets" className="inline-flex h-11 items-center text-sm font-semibold text-indigo">
+            36 states and the FCT
           </Link>
         </div>
 

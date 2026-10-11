@@ -1,6 +1,8 @@
 import { createHash, randomBytes } from "node:crypto";
 import { createServerFn } from "@tanstack/react-start";
 import { markets } from "@/data/lagos";
+import { isStateId } from "@/data/nigeria";
+import { lgasIn } from "@/data/lgas";
 import { categories } from "@/data/market";
 import { tidyPhone } from "@/data/trade";
 import { getSql } from "@/lib/db";
@@ -18,6 +20,7 @@ type BusinessRow = {
   name: string;
   trader: string;
   market_id: string;
+  lga: string;
   category: string;
   about: string;
   stall_code: string;
@@ -33,6 +36,7 @@ export type RegisterInput = {
   name: string;
   trader: string;
   marketId: string;
+  lga: string;
   category: string;
   stallCode: string;
   phone: string;
@@ -95,7 +99,14 @@ export const registerBusiness = createServerFn({ method: "POST" })
     if (data.name.trim().length < 2 || data.trader.trim().length < 2) {
       return { ok: false, error: "Add the business name and your name." };
     }
-    if (!marketIds.has(data.marketId)) return { ok: false, error: "Choose a Lagos market." };
+    const lga = data.lga.trim();
+    const stateKey = isStateId(data.marketId) ? data.marketId : "lagos";
+    if (!lgasIn(stateKey).includes(lga)) {
+      return { ok: false, error: "Choose a local government in that state." };
+    }
+    if (!marketIds.has(data.marketId) && !isStateId(data.marketId)) {
+      return { ok: false, error: "Choose a state or a Lagos market." };
+    }
     if (!categoryIds.has(data.category as (typeof categories)[number]["id"])) {
       return { ok: false, error: "Choose what you sell." };
     }
@@ -117,10 +128,10 @@ export const registerBusiness = createServerFn({ method: "POST" })
     `;
     await sql`
       insert into businesses (
-        id, account_id, name, trader, market_id, category, about, stall_code, phone
+        id, account_id, name, trader, market_id, lga, category, about, stall_code, phone
       ) values (
         ${businessId}, ${accountId}, ${data.name.trim()}, ${data.trader.trim()},
-        ${data.marketId}, ${data.category}, ${data.about.trim().slice(0, 280)}, ${stallCode}, ${phone}
+        ${data.marketId}, ${lga}, ${data.category}, ${data.about.trim().slice(0, 280)}, ${stallCode}, ${phone}
       )
     `;
     await sql`
@@ -191,7 +202,9 @@ export const updatePlanPrice = createServerFn({ method: "POST" })
       return { ok: false, error: "Set OJA_ADMIN_KEY on the server, at least 16 characters, before a price can change." };
     }
     if (data.adminKey !== expected) return { ok: false, error: "That administrator key was refused." };
-    if (data.code !== "growth") return { ok: false, error: "Only the Growth price can be proposed. Starter stays free, and the 2% fee stays off." };
+    if (data.code !== "growth" && data.code !== "verify") {
+      return { ok: false, error: "Only the Growth or Verification price can be proposed. Locating a business stays free, and the 2% fee stays off." };
+    }
     const price = Math.round(Number(data.priceNaira));
     if (!Number.isFinite(price) || price < 0 || price > 5_000_000) {
       return { ok: false, error: "Use a price from ₦0 to ₦5,000,000." };
@@ -201,8 +214,12 @@ export const updatePlanPrice = createServerFn({ method: "POST" })
       update plan_settings
       set price_naira = ${price},
           purchasable = false,
-          note = ${"Proposed price only. Payment is not connected, so this plan cannot be bought."}
-      where code = 'growth'
+          note = ${
+            data.code === "verify"
+              ? "Proposed verification price. Payment is not connected, so this cannot be bought, and paying would not grant a badge."
+              : "Proposed price only. Payment is not connected, so this plan cannot be bought."
+          }
+      where code = ${data.code}
     `;
     return { ok: true, data: { priceNaira: price } };
   });
@@ -238,6 +255,7 @@ export type OwnerView = {
   business: BusinessRow;
   products: { id: string; name: string; price_naira: number; unit: string }[];
   enquiries: { id: string; from_name: string; from_contact: string; message: string; stall_code: string }[];
+  checks: { kind: "cac" | "nafdac" }[];
 };
 
 export const getOwner = createServerFn({ method: "GET" }).handler(async (): Promise<OwnerView | null> => {
@@ -255,7 +273,10 @@ export const getOwner = createServerFn({ method: "GET" }).handler(async (): Prom
     where business_id = ${business.id} or stall_code = ${business.stall_code}
     order by created_at desc limit 30
   `;
-  return { email: accounts[0].email, business, products, enquiries };
+  const checks = await sql<{ kind: "cac" | "nafdac" }>`
+    select kind from verification_requests where business_id = ${business.id} and status = 'pending'
+  `;
+  return { email: accounts[0].email, business, products, enquiries, checks };
 });
 
 export const addProduct = createServerFn({ method: "POST" })

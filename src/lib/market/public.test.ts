@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { identityAfterPayment, nextIdentityStatus, toPublicBusiness } from "./public.ts";
+import { anyTierVerified, feeCharged, sponsorMark, tierBoard } from "./trust.ts";
 import { hashPassword, verifyPassword } from "./passwords.ts";
 
 const row = {
@@ -8,6 +9,7 @@ const row = {
   name: "Iya Bose",
   trader: "Bose",
   market_id: "balogun",
+  lga: "Lagos Island",
   category: "food",
   about: "Pepper",
   stall_code: "BA01",
@@ -30,6 +32,21 @@ test("CAC can be pending, and NAFDAC does not change identity", () => {
   assert.equal(nextIdentityStatus("unverified", "cac"), "pending");
   assert.equal(nextIdentityStatus("unverified", "nafdac"), "unverified");
   assert.equal(nextIdentityStatus("pending", "nafdac"), "pending");
+});
+
+test("no trust tier is verified, and a pending file is only a queue", () => {
+  const board = tierBoard({ cacPending: true, nafdacPending: true });
+  assert.equal(anyTierVerified(), false);
+  assert.deepEqual(
+    board.map((tier) => tier.state),
+    ["not_checked", "not_checked", "pending", "pending"],
+  );
+});
+
+test("the proposed 2% is not charged, and a draft advert is not marked sponsored", () => {
+  assert.equal(feeCharged(100000), 0);
+  assert.equal(sponsorMark(false), null);
+  assert.equal(sponsorMark(true), "Sponsored");
 });
 
 test("password hash verifies only the same password", async () => {

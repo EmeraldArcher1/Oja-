@@ -30,6 +30,7 @@ import {
   type Job,
 } from "@/data/trade";
 import { cn } from "@/lib/cn";
+import { sendEnquiry } from "@/lib/market/api";
 import { useMarket } from "@/lib/market-store";
 
 export const Route = createFileRoute("/stall/$code")({
@@ -116,7 +117,7 @@ function StallPage() {
     }
   }
 
-  function placeOrder() {
+  async function placeOrder() {
     const buyer = tidyPhone(buyerPhone);
     if (!buyer) {
       setFormError("Enter the buyer’s Nigerian mobile so the trader and rider can call back.");
@@ -151,12 +152,28 @@ function StallPage() {
     placeJob(job);
     setBuyer({ name: job.buyerName, phone: buyer });
     setFormError("");
-    window.open(orderHref(live, orderMessage(live, job.lines, note, job)), "_blank", "noopener,noreferrer");
+    const basket = job.lines.map((line) => `${line.qty} × ${line.name}`).join(", ");
+    if (live.phonePublic) {
+      window.open(orderHref(live, orderMessage(live, job.lines, note, job)), "_blank", "noopener,noreferrer");
+    } else {
+      const result = await sendEnquiry({
+        data: {
+          stallCode: found.code,
+          fromName: job.buyerName,
+          fromContact: buyer,
+          message: `${basket}. ${note}`.trim(),
+        },
+      });
+      if (!result.ok) {
+        setFormError(result.error);
+        return;
+      }
+    }
     void navigate({ to: "/orders" });
   }
 
   async function copyCode() {
-    const text = `Oja · ${market.name}\n${found.business}\n${spokenCode(found)}\nCode ${found.code}\n${showPhone(live.phone)}`;
+    const text = `Oja · ${market.name}\n${found.business}\n${spokenCode(found)}\nCode ${found.code}`;
     try {
       await navigator.clipboard.writeText(text);
       setCopied(true);
@@ -197,7 +214,7 @@ function StallPage() {
           {market.name}
         </Link>
         <Link to="/open" search={{ kind: "ad", code: stall.code }} className="text-sm font-semibold text-indigo">
-          Advertise
+          Ad request
         </Link>
         <Link to="/open" search={{ kind: "export", code: stall.code }} className="text-sm font-semibold text-indigo">
           Export inquiry
@@ -237,15 +254,17 @@ function StallPage() {
           </a>
         )}
         <a
-          href={waLink({ ...stall, whatsapp: live.phone })}
-          target="_blank"
-          rel="noreferrer"
+          href={live.phonePublic ? waLink({ ...stall, whatsapp: live.phone }) : "#shop"}
+          target={live.phonePublic ? "_blank" : undefined}
+          rel={live.phonePublic ? "noreferrer" : undefined}
           className="flex h-14 items-center justify-center gap-2 rounded-2xl border border-line bg-sheet px-3 text-center text-sm font-semibold text-ink"
         >
           <MessageCircle className="size-4" aria-hidden />
           <span>
-            {showPhone(live.phone)}
-            <span className="block text-xs font-normal text-muted">{t(ui.askOpen, lang)}</span>
+            {live.phonePublic ? showPhone(live.phone) : "Enquiry"}
+            <span className="block text-xs font-normal text-muted">
+              {live.phonePublic ? t(ui.askOpen, lang) : "Number hidden"}
+            </span>
           </span>
         </a>
       </div>
@@ -406,12 +425,11 @@ function StallPage() {
         )}
         {formError ? <p className="mt-2 text-sm font-medium text-clay">{formError}</p> : null}
         <p className="mt-2 text-sm text-muted">
-          Sample price. Stock is not live — the stall must confirm it. If this order is delivered, Oja
-          keeps {naira(count > 0 ? ojaToken(total) : 100)} (2% of the goods, at least ₦100). That is
-          not profit, and it is not the delivery fee.
+          Sample price. Stock is not live. A 2% fee is proposed and is not charged. The trader’s number
+          stays hidden unless they publish it.
           {mode === "rider"
-            ? ` Posh9ja quotes ${naira(deliveryQuote("rider"))} separately.`
-            : " Pickup has no Posh9ja fee."}
+            ? ` Posh9ja quotes ${naira(deliveryQuote("rider"))} separately, and that quote is not a booking.`
+            : " Pickup has no delivery fee."}
         </p>
       </section>
 
@@ -433,8 +451,9 @@ function StallPage() {
 
       <section className="mt-8 rounded-2xl border border-line bg-sheet p-4">
         <h2 className="text-xs font-semibold tracking-wide text-muted uppercase">{t(ui.note, lang)}</h2>
-        <p className="mt-2 text-ink">“{stall.note.text}”</p>
-        <p className="mt-2 text-sm text-muted">{stall.note.name}</p>
+        <p className="mt-2 text-sm text-muted">Written for the pilot. This is not a customer review.</p>
+        <p className="mt-2 text-ink">{stall.note.text}</p>
+        <p className="mt-2 text-sm text-muted">Sample name, not a customer: {stall.note.name}</p>
       </section>
       {count > 0 ? (
         <div className="fixed inset-x-0 bottom-16 z-20 border-t border-line bg-sheet px-4 py-3 lg:bottom-0">

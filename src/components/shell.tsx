@@ -32,7 +32,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3">
           <Link to="/" className="flex items-baseline gap-2">
             <span className="font-display text-3xl leading-none tracking-tight text-indigo">Oja</span>
-            <span className="text-sm text-muted">Lagos</span>
+            <span className="text-sm text-muted">Naija</span>
           </Link>
           <div className="flex items-center gap-2">
             <nav className="hidden items-center gap-1 lg:flex" aria-label="Pages">

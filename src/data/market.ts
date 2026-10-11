@@ -494,7 +494,7 @@ export const edges: Edge[] = [
 function stall(
   partial: Omit<Stall, "id"> & { id?: string },
 ): Stall {
-  return { ...partial, id: partial.code.toLowerCase() };
+  return { verified: "sample", ...partial, id: partial.code.toLowerCase() };
 }
 
 export const stalls: Stall[] = [
@@ -511,7 +511,7 @@ export const stalls: Stall[] = [
     languages: ["Yoruba", "English", "Pidgin"],
     hours: "Mon–Sat, 8am–6pm",
     photo: "/market/lace.jpg",
-    whatsapp: "2348000001004",
+    whatsapp: "2348113657972",
     shutter: {
       en: "Third wooden shutter on the left, with a blue plastic chair outside. A1-04 is painted in white on the frame. Ask for Kemi.",
       pg: "Third wooden shutter for your left. Blue plastic chair dey outside. A1-04 dey paint with white for the frame. Ask for Kemi.",
@@ -539,7 +539,7 @@ export const stalls: Stall[] = [
     languages: ["Yoruba", "English"],
     hours: "Mon–Sat, 8:30am–6pm",
     photo: "/market/lace.jpg",
-    whatsapp: "2348000001011",
+    whatsapp: "2348113657973",
     shutter: {
       en: "Look up: gele are pinned across the top of the stall. A2-11 is chalked on the lintel. Bolaji sits on a low stool.",
       pg: "Look up: gele dey pin across the top of the stall. A2-11 dey write for the lintel. Bolaji dey sit on short stool.",
@@ -567,7 +567,7 @@ export const stalls: Stall[] = [
     languages: ["Yoruba", "Pidgin", "English"],
     hours: "Mon–Sat, 8am–5:30pm",
     photo: "/market/ankara.jpg",
-    whatsapp: "2348000001002",
+    whatsapp: "2348113657974",
     shutter: {
       en: "End of row 3, next to a humming sewing machine. A3-02 is on a piece of cardboard wired to the post.",
       pg: "End of row 3, near sewing machine wey dey hum. A3-02 dey on cardboard wey dem tie for the post.",
@@ -595,7 +595,7 @@ export const stalls: Stall[] = [
     languages: ["Yoruba", "English"],
     hours: "Mon–Sat, 9am–6pm",
     photo: "/market/adire.jpg",
-    whatsapp: "2348000001106",
+    whatsapp: "2348113657975",
     shutter: {
       en: "The stall with deep blue cloth on the table, not the wax prints. B1-06 is stitched into a small cloth tag on the upright.",
       pg: "The stall wey get deep blue cloth on the table, no be the wax print. B1-06 dey sew on small cloth tag for the wood.",
@@ -623,7 +623,7 @@ export const stalls: Stall[] = [
     languages: ["Igbo", "Yoruba", "English", "Pidgin"],
     hours: "Mon–Sat, 8:30am–6pm",
     photo: "/market/asooke.jpg",
-    whatsapp: "2348000001115",
+    whatsapp: "2348113657976",
     shutter: {
       en: "Narrow stall, cloth in strips rather than wide prints. B2-15 is painted low, near the floor, in white.",
       pg: "Narrow stall, cloth dey as strip, no be wide print. B2-15 dey paint near the floor, with white.",
@@ -651,7 +651,7 @@ export const stalls: Stall[] = [
     languages: ["Hausa", "Yoruba", "Pidgin", "English"],
     hours: "Daily, 8am–6pm",
     photo: "/market/ankara.jpg",
-    whatsapp: "2348000001403",
+    whatsapp: "2348113657977",
     shutter: {
       en: "Prints stacked to the roof, a red stool in the aisle. B4-03 is on a metal plate nailed at eye level.",
       pg: "Print dem stack reach roof, red stool dey for aisle. B4-03 dey on metal plate wey dem nail for eye level.",
@@ -679,7 +679,7 @@ export const stalls: Stall[] = [
     languages: ["Yoruba", "Pidgin"],
     hours: "Daily, 6:30am–5pm",
     photo: "/market/pepper.jpg",
-    whatsapp: "2348000002002",
+    whatsapp: "2348113657978",
     shutter: {
       en: "First shutter behind the open pepper basins. C1-02 is written on the basin itself, in white paint.",
       pg: "First shutter behind the open pepper basin. C1-02 dey write on the basin, with white paint.",
@@ -707,7 +707,7 @@ export const stalls: Stall[] = [
     languages: ["Igbo", "Pidgin", "English"],
     hours: "Mon–Sat, 7am–6pm",
     photo: "/market/provisions.jpg",
-    whatsapp: "2348000002009",
+    whatsapp: "2348113657979",
     shutter: {
       en: "Sacks stacked twice a person’s height, red oil bottles on the shelf. C2-09 is stencilled on the sack at the front.",
       pg: "Bag dem stack pass person height, red oil bottle dey for shelf. C2-09 dey stencil on the bag for front.",
@@ -735,7 +735,7 @@ export const stalls: Stall[] = [
     languages: ["Yoruba", "Pidgin", "English"],
     hours: "Daily, 6:30am–4pm",
     photo: "/market/pepper.jpg",
-    whatsapp: "2348000002408",
+    whatsapp: "2348113657980",
     shutter: {
       en: "Row 4, the basin stall, not a shutter. C4-08 is painted on the wooden leg of the table. Tunde wears a green apron.",
       pg: "Row 4, the basin stall, no be shutter. C4-08 dey paint on the wooden leg of the table. Tunde dey wear green apron.",
@@ -763,7 +763,7 @@ export const stalls: Stall[] = [
     languages: ["Igbo", "Pidgin", "English"],
     hours: "Mon–Sat, 9am–6pm",
     photo: "/market/beauty.jpg",
-    whatsapp: "2348000003005",
+    whatsapp: "2348113657981",
     shutter: {
       en: "Jars in straight rows, a hand mirror hanging from a nail. D2-05 is written on the mirror frame.",
       pg: "Jar dem dey straight line, hand mirror dey hang for nail. D2-05 dey write on the mirror frame.",
@@ -791,7 +791,7 @@ export const stalls: Stall[] = [
     languages: ["Hausa", "English", "Pidgin"],
     hours: "Mon–Sat, 9am–6:30pm",
     photo: "/market/beauty.jpg",
-    whatsapp: "2348000003012",
+    whatsapp: "2348113657982",
     shutter: {
       en: "Small dark bottles, not cream tubs. D3-12 is on a brass-coloured tag tied to the shelf.",
       pg: "Small dark bottle, no be cream tub. D3-12 dey on brass-colour tag wey dem tie for the shelf.",
@@ -819,7 +819,7 @@ export const stalls: Stall[] = [
     languages: ["Igbo", "Pidgin", "English"],
     hours: "Daily, 8am–7pm",
     photo: "/market/umbrellas.jpg",
-    whatsapp: "2348000004007",
+    whatsapp: "2348113657983",
     shutter: {
       en: "Under the left yellow umbrella, cases in a hanging rack. E1-07 is markered on the umbrella pole.",
       pg: "Under the left yellow umbrella, case dey for hanging rack. E1-07 dey mark for the umbrella pole.",
@@ -847,7 +847,7 @@ export const stalls: Stall[] = [
     languages: ["Igbo", "English", "Pidgin"],
     hours: "Mon–Sat, 9am–6:30pm",
     photo: "/market/umbrellas.jpg",
-    whatsapp: "2348000004019",
+    whatsapp: "2348113657984",
     shutter: {
       en: "One row behind the umbrellas, a desk lamp and a blue parts tray. E2-19 is taped to the lamp.",
       pg: "One line behind the umbrella, desk lamp and blue tray dey there. E2-19 dey tape for the lamp.",
@@ -875,7 +875,7 @@ export const stalls: Stall[] = [
     languages: ["Yoruba", "Pidgin"],
     hours: "Mon–Sat, 8am–5:30pm",
     photo: "/market/plastics.jpg",
-    whatsapp: "2348000005003",
+    whatsapp: "2348113657985",
     shutter: {
       en: "The tallest stack of coloured basins on the back lane. F1-03 is scratched into the red basin at the bottom.",
       pg: "The tallest stack of colour basin for the back road. F1-03 dey scratch on the red basin for bottom.",
@@ -903,7 +903,7 @@ export const stalls: Stall[] = [
     languages: ["Yoruba", "English", "Pidgin"],
     hours: "Mon–Sat, 8:30am–6pm",
     photo: "/market/plastics.jpg",
-    whatsapp: "2348000005010",
+    whatsapp: "2348113657986",
     shutter: {
       en: "Coolers stacked like bricks, past the basins. F3-10 is on a paper tag tied to the top handle.",
       pg: "Cooler dem stack like brick, after the basin. F3-10 dey on paper tag wey dem tie for the top handle.",
@@ -945,8 +945,8 @@ export const ui = {
   copied: { en: "Copied", pg: "E don copy" },
   minWalk: { en: "min walk", pg: "min waka" },
   prototype: {
-    en: "Sample stalls, not verified businesses. Prices are listed, not live stock. Oja’s 2% is separate from the Posh9ja delivery quote.",
-    pg: "Na sample stalls, no be verified business. Price wey you see no be live stock. Oja 2% different from Posh9ja delivery money.",
+    en: "This is a pilot. The stalls you can open are samples, not shops that have joined. Prices are examples. No payment, delivery, or verification runs here.",
+    pg: "Na pilot. The stalls wey you fit open na sample, no be shop wey don join. Price na example. No payment, no delivery, no verification dey run here.",
   },
   catalogue: { en: "Catalogue", pg: "Wetin dem get" },
   giveCode: {

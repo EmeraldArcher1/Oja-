@@ -9,6 +9,7 @@ export const Route = createFileRoute("/admin")({
 
 function AdminPage() {
   const [plans, setPlans] = useState<Awaited<ReturnType<typeof listPlans>>>([]);
+  const [code, setCode] = useState<"growth" | "verify">("verify");
   const [price, setPrice] = useState("");
   const [adminKey, setAdminKey] = useState("");
   const [message, setMessage] = useState("");
@@ -19,8 +20,8 @@ function AdminPage() {
 
   async function submit(event: FormEvent) {
     event.preventDefault();
-    const result = await updatePlanPrice({ data: { code: "growth", priceNaira: Number(price.replace(/,/g, "")), adminKey } });
-    setMessage(result.ok ? `Growth proposed at ${naira(result.data.priceNaira)}. It still cannot be bought.` : result.error);
+    const result = await updatePlanPrice({ data: { code, priceNaira: Number(price.replace(/,/g, "")), adminKey } });
+    setMessage(result.ok ? `${code === "verify" ? "Verification" : "Growth"} proposed at ${naira(result.data.priceNaira)}. It still cannot be bought.` : result.error);
     if (result.ok) {
       setAdminKey("");
       setPlans(await listPlans());
@@ -31,7 +32,9 @@ function AdminPage() {
     <main className="mx-auto w-full max-w-xl px-4 py-5">
       <h1 className="font-display text-4xl text-ink">Plan prices</h1>
       <p className="mt-2 text-muted">
-        An administrator can propose the Growth price. The key is checked on the server and is not saved in the app. Starter stays free. The 2% fee cannot be switched on.
+        Locating a business is free. An administrator can propose a Verification price or a Growth price.
+        Neither can be bought. The key is checked on the server and is not saved in the app. The 2% fee
+        cannot be switched on.
       </p>
       <ul className="mt-4 grid gap-2">
         {plans.map((plan) => (
@@ -44,7 +47,11 @@ function AdminPage() {
         ))}
       </ul>
       <form onSubmit={(event) => void submit(event)} className="mt-6 grid gap-2">
-        <input value={price} onChange={(event) => setPrice(event.target.value)} inputMode="numeric" placeholder="Growth price in naira" className="h-12 rounded-2xl border border-line bg-sheet px-3" />
+        <select value={code} onChange={(event) => setCode(event.target.value as "growth" | "verify")} className="h-12 rounded-2xl border border-line bg-sheet px-3">
+          <option value="verify">Verification price</option>
+          <option value="growth">Growth price</option>
+        </select>
+        <input value={price} onChange={(event) => setPrice(event.target.value)} inputMode="numeric" placeholder="Price in naira" className="h-12 rounded-2xl border border-line bg-sheet px-3" />
         <input value={adminKey} onChange={(event) => setAdminKey(event.target.value)} type="password" placeholder="Administrator key" autoComplete="off" className="h-12 rounded-2xl border border-line bg-sheet px-3" />
         <button type="submit" className="h-12 rounded-2xl bg-indigo text-sm font-semibold text-sheet">
           Save proposed price

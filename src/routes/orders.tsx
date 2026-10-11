@@ -29,24 +29,22 @@ const stepName: Record<Job["status"], string> = {
 
 function OrdersPage() {
   const jobs = useMarket((state) => state.jobs);
-  const tokens = useMarket((state) => state.tokens);
   const overrides = useMarket((state) => state.overrides);
   const open = jobs.filter((job) => job.status !== "cancelled" && !jobDone(job)).length;
 
   return (
     <main className="mx-auto w-full max-w-3xl px-4 py-5">
-      <p className="text-sm font-medium text-indigo">Posh9ja desk</p>
+      <p className="text-sm font-medium text-indigo">Practice desk</p>
       <h1 className="mt-1 font-display text-4xl text-ink">Orders</h1>
       <p className="mt-2 max-w-xl text-muted">
-        A rider collects with the order reference. The trader confirms the goods first. Posh9ja notes
-        the parcel, then records who received it. Oja’s 2% is written down only then.
+        This list stays on this phone. No rider is called. No money moves. A 2% figure, where you see one, is a proposal and is not collected.
       </p>
       <div className="mt-4 grid grid-cols-2 gap-2">
         <p className="rounded-2xl bg-indigo px-4 py-4 text-sheet">
           <span className="block text-xs font-semibold tracking-wide text-indigo-soft uppercase">
-            Commission recorded
+            Commission collected
           </span>
-          <span className="font-display text-4xl leading-none">{naira(tokens)}</span>
+          <span className="font-display text-4xl leading-none">{naira(0)}</span>
         </p>
         <p className="rounded-2xl border border-line bg-sheet px-4 py-4">
           <span className="block text-xs font-semibold tracking-wide text-muted uppercase">Open jobs</span>
@@ -70,8 +68,8 @@ function OrdersPage() {
         <h2 className="font-display text-2xl text-ink">Pilot rules</h2>
         <ul className="mt-3 grid gap-2">
           <li>Every stall here is a sample. “Sample listing” is not a verification record.</li>
-          <li>Oja’s commission is 2% of the goods, at least ₦100, and only after delivery. It is not profit.</li>
-          <li>Posh9ja’s delivery quote is separate. The buyer pays it on top. Pickup is free.</li>
+          <li>A 2% commission is proposed. It is not charged, because payment and settlement are not connected.</li>
+          <li>The delivery amount is a quote on this screen. It does not book Posh9ja or any rider.</li>
           <li>Cancel before collection and no commission is recorded.</li>
           <li>No live payment, refund, or bank settlement runs in this pilot.</li>
         </ul>
@@ -141,7 +139,7 @@ function DeskJob({
         </div>
         <p className="text-right text-sm">
           <span className="block font-semibold tabular-nums">{naira(job.goods)} goods</span>
-          <span className="block text-muted">Oja 2% {naira(job.token)}</span>
+          <span className="block text-muted">Proposed 2% {naira(job.token)} · not charged</span>
           <span className="block text-muted">Trader keeps {naira(traderKeeps(job.goods, job.token))}</span>
           <span className="block text-muted">{fee > 0 ? `Posh9ja ${naira(fee)}` : "No delivery fee"}</span>
         </p>
@@ -157,7 +155,11 @@ function DeskJob({
         {job.buyerName || "Buyer"} · {showPhone(job.buyerPhone)}
       </p>
       {job.mode === "rider" ? <p className="text-sm text-muted">Drop-off: {job.dropoff}</p> : null}
-      {live ? <p className="text-sm text-muted">Stall line: {showPhone(live.phone)}</p> : null}
+      {live ? (
+        <p className="text-sm text-muted">
+          {live.phonePublic ? `Stall line: ${showPhone(live.phone)}` : "Stall number is hidden."}
+        </p>
+      ) : null}
       {job.parcel ? <p className="mt-2 text-sm">Parcel: {job.parcel}</p> : null}
       {job.pod ? <p className="text-sm">Received by {job.pod}</p> : null}
       {error ? <p className="mt-2 text-sm font-medium text-clay">{error}</p> : null}
@@ -206,7 +208,7 @@ function DeskJob({
             Locate
           </a>
         ) : null}
-        {live ? (
+        {live?.phonePublic ? (
           <a
             href={orderHref(live, orderMessage(live, job.lines, job.note, job))}
             target="_blank"
@@ -261,7 +263,7 @@ function DeskJob({
             Cancel
           </button>
         ) : null}
-        {done ? <span className="inline-flex h-11 items-center text-sm font-semibold text-indigo">Commission recorded</span> : null}
+        {done ? <span className="inline-flex h-11 items-center text-sm font-semibold text-indigo">Delivered · no fee taken</span> : null}
       </div>
     </li>
   );

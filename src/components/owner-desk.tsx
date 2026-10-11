@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { Stall } from "@/data/market";
 import { naira } from "@/data/market";
-import { showPhone, tidyPhone, type LiveStall } from "@/data/trade";
+import { tidyPhone, type LiveStall } from "@/data/trade";
 import { useMarket } from "@/lib/market-store";
 
 export function OwnerDesk({ stall, live }: { stall: Stall; live: LiveStall }) {
@@ -76,11 +76,11 @@ export function OwnerDesk({ stall, live }: { stall: Stall; live: LiveStall }) {
     <section id="owner" className="mt-8 rounded-2xl border border-line bg-sheet p-4">
       <h2 className="font-display text-3xl text-ink">Stall owner</h2>
       <p className="mt-1 text-sm text-muted">
-        Change the phone, the products, the photo, or the pin. Buyers use whatever you save here.
-        This sample does not collect NIN or BVN.
+        Your number stays hidden until you publish it. Buyers send an enquiry instead. This sample does
+        not collect NIN, BVN, or a CAC result.
       </p>
       <p className="mt-3 text-sm text-ink">
-        Order line now: <span className="font-semibold">{showPhone(live.phone)}</span>
+        {live.phonePublic ? "The number is published on this stall." : "The number is hidden on this stall."}
       </p>
 
       <label className="mt-4 block text-sm font-medium">
@@ -99,6 +99,16 @@ export function OwnerDesk({ stall, live }: { stall: Stall; live: LiveStall }) {
         className="mt-2 h-11 rounded-full bg-indigo px-4 text-sm font-semibold text-sheet"
       >
         Save phone
+      </button>
+      <button
+        type="button"
+        onClick={() => {
+          patchStall(stall.id, { publishPhone: !live.phonePublic });
+          setMessage(live.phonePublic ? "Number hidden again." : "Number published. Buyers can see it.");
+        }}
+        className="mt-2 ml-2 h-11 rounded-full border border-line px-4 text-sm font-semibold"
+      >
+        {live.phonePublic ? "Hide number" : "Publish number"}
       </button>
 
       <div className="mt-5">

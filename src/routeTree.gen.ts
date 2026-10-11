@@ -23,6 +23,7 @@ import { Route as StartRouteImport } from './routes/start'
 import { Route as MarketIdRouteImport } from './routes/market.$id'
 import { Route as ShopCodeRouteImport } from './routes/shop.$code'
 import { Route as StallCodeRouteImport } from './routes/stall.$code'
+import { Route as StateIdRouteImport } from './routes/state.$id'
 import { Route as WalkCodeRouteImport } from './routes/walk.$code'
 
 const IndexRoute = IndexRouteImport.update({
@@ -95,6 +96,11 @@ const StallCodeRoute = StallCodeRouteImport.update({
   path: '/stall/$code',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StateIdRoute = StateIdRouteImport.update({
+  id: '/state/$id',
+  path: '/state/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const WalkCodeRoute = WalkCodeRouteImport.update({
   id: '/walk/$code',
   path: '/walk/$code',
@@ -116,6 +122,7 @@ export interface FileRoutesByFullPath {
   '/market/$id': typeof MarketIdRoute
   '/shop/$code': typeof ShopCodeRoute
   '/stall/$code': typeof StallCodeRoute
+  '/state/$id': typeof StateIdRoute
   '/walk/$code': typeof WalkCodeRoute
 }
 export interface FileRoutesByTo {
@@ -133,6 +140,7 @@ export interface FileRoutesByTo {
   '/market/$id': typeof MarketIdRoute
   '/shop/$code': typeof ShopCodeRoute
   '/stall/$code': typeof StallCodeRoute
+  '/state/$id': typeof StateIdRoute
   '/walk/$code': typeof WalkCodeRoute
 }
 export interface FileRoutesById {
@@ -151,6 +159,7 @@ export interface FileRoutesById {
   '/market/$id': typeof MarketIdRoute
   '/shop/$code': typeof ShopCodeRoute
   '/stall/$code': typeof StallCodeRoute
+  '/state/$id': typeof StateIdRoute
   '/walk/$code': typeof WalkCodeRoute
 }
 export interface FileRouteTypes {
@@ -170,6 +179,7 @@ export interface FileRouteTypes {
     | '/market/$id'
     | '/shop/$code'
     | '/stall/$code'
+    | '/state/$id'
     | '/walk/$code'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -187,6 +197,7 @@ export interface FileRouteTypes {
     | '/market/$id'
     | '/shop/$code'
     | '/stall/$code'
+    | '/state/$id'
     | '/walk/$code'
   id:
     | '__root__'
@@ -204,6 +215,7 @@ export interface FileRouteTypes {
     | '/market/$id'
     | '/shop/$code'
     | '/stall/$code'
+    | '/state/$id'
     | '/walk/$code'
   fileRoutesById: FileRoutesById
 }
@@ -222,6 +234,7 @@ export interface RootRouteChildren {
   MarketIdRoute: typeof MarketIdRoute
   ShopCodeRoute: typeof ShopCodeRoute
   StallCodeRoute: typeof StallCodeRoute
+  StateIdRoute: typeof StateIdRoute
   WalkCodeRoute: typeof WalkCodeRoute
 }
 
@@ -325,6 +338,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StallCodeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/state/$id': {
+      id: '/state/$id'
+      path: '/state/$id'
+      fullPath: '/state/$id'
+      preLoaderRoute: typeof StateIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/walk/$code': {
       id: '/walk/$code'
       path: '/walk/$code'
@@ -350,6 +370,7 @@ const rootRouteChildren: RootRouteChildren = {
   MarketIdRoute: MarketIdRoute,
   ShopCodeRoute: ShopCodeRoute,
   StallCodeRoute: StallCodeRoute,
+  StateIdRoute: StateIdRoute,
   WalkCodeRoute: WalkCodeRoute,
 }
 export const routeTree = rootRouteImport

@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
-import { marketById } from "@/data/lagos";
+import { marketById, markets } from "@/data/lagos";
+import { stateById } from "@/data/nigeria";
 import { categoryLabel, categories, naira, type CategoryId } from "@/data/market";
 import { getPublicShop, sendEnquiry, type PublicBusiness } from "@/lib/market/api";
 import { showPhone } from "@/data/trade";
@@ -74,17 +75,23 @@ function ShopBody({
   sent: string;
   onSubmit: (event: FormEvent) => void;
 }) {
-  const market = marketById(shop.marketId);
+  const market = markets.find((item) => item.id === shop.marketId);
+  const state = stateById(shop.marketId);
+  const placeName = market?.name ?? (state ? `${state.market}, ${state.name}` : "Nigeria");
   const category = (categories.find((item) => item.id === shop.category)?.id ?? "food") as CategoryId;
   return (
     <main className="mx-auto w-full max-w-xl px-4 py-5">
-      <p className="text-sm font-medium text-indigo">{market.name}</p>
+      <p className="text-sm font-medium text-indigo">{placeName}</p>
       <h1 className="mt-1 font-display text-4xl text-ink">{shop.name}</h1>
       <p className="mt-2 text-muted">
         {shop.trader} · {categoryLabel(category)} · {shop.stallCode}
+        {shop.lga ? ` · ${shop.lga}` : ""}
       </p>
       <p className="mt-2 inline-flex rounded-full border border-line px-3 py-1 text-sm">
-        {shop.identityStatus === "pending" ? "CAC check pending · not verified" : "Not verified"}
+        {shop.identityStatus === "pending" ? "CAC file pending · not verified" : "Not verified"}
+      </p>
+      <p className="mt-2 text-sm text-muted">
+        Person, stall visit, CAC, and NAFDAC are separate. None of them is a badge on this page.
       </p>
       {shop.about ? <p className="mt-3 text-ink">{shop.about}</p> : null}
       <p className="mt-3 text-sm text-muted">
@@ -110,9 +117,15 @@ function ShopBody({
           Send enquiry
         </button>
       </form>
-      <Link to="/market/$id" params={{ id: shop.marketId }} className="mt-4 inline-flex text-sm font-semibold text-indigo">
-        {market.name}
-      </Link>
+      {market ? (
+        <Link to="/market/$id" params={{ id: market.id }} className="mt-4 inline-flex text-sm font-semibold text-indigo">
+          {market.name}
+        </Link>
+      ) : state ? (
+        <Link to="/state/$id" params={{ id: state.id }} className="mt-4 inline-flex text-sm font-semibold text-indigo">
+          {state.name}
+        </Link>
+      ) : null}
     </main>
   );
 }
