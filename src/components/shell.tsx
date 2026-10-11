@@ -1,6 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { Bike, Bookmark, Search, Store, Tag } from "lucide-react";
 import { useEffect } from "react";
+import { VoiceNav } from "@/components/voice-nav";
 import { t, ui, type Lang } from "@/data/market";
 import { useMarket } from "@/lib/market-store";
 
@@ -14,8 +15,19 @@ export function Shell({ children }: { children: React.ReactNode }) {
     void useMarket.persist.rehydrate();
   }, []);
 
+  useEffect(() => {
+    const code = lang === "pg" ? "pcm" : lang;
+    document.documentElement.lang = code;
+  }, [lang]);
+
   return (
     <div className="min-h-dvh overflow-x-hidden">
+      <a
+        href="#content"
+        className="skip-link"
+      >
+        Skip to content
+      </a>
       <header className="sticky top-0 z-30 border-b border-line bg-paper/95 backdrop-blur-sm">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3">
           <Link to="/" className="flex items-baseline gap-2">
@@ -23,23 +35,26 @@ export function Shell({ children }: { children: React.ReactNode }) {
             <span className="text-sm text-muted">Lagos</span>
           </Link>
           <div className="flex items-center gap-2">
-            <nav className="hidden items-center gap-1 lg:flex">
+            <nav className="hidden items-center gap-1 lg:flex" aria-label="Pages">
               <TopLink to="/" exact label={t(ui.search, lang)} />
               <TopLink to="/markets" label="Markets" />
               <TopLink to="/start" label="Sell" />
-              <TopLink to="/join" label="Register" />
+              <TopLink to="/join" label="Sign up" />
               <TopLink to="/orders" label="Orders" />
               <TopLink to="/open" label="Open" />
               <TopLink to="/map" label={t(ui.map, lang)} />
               <TopLink to="/saved" label={t(ui.saved, lang)} />
             </nav>
+            <VoiceNav />
             <LangSwitch lang={lang} setLang={setLang} />
           </div>
         </div>
       </header>
-      <div className={walking ? "" : "pb-24 lg:pb-10"}>{children}</div>
+      <div id="content" tabIndex={-1} className={walking ? "outline-none" : "pb-24 outline-none lg:pb-10"}>
+        {children}
+      </div>
       {!walking ? (
-        <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-sheet lg:hidden">
+        <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-sheet lg:hidden" aria-label="Main">
           <div className="mx-auto grid max-w-lg grid-cols-5">
             <Tab to="/" exact icon={Search} label={t(ui.search, lang)} />
             <Tab to="/markets" icon={Store} label="Markets" />
@@ -58,7 +73,7 @@ function LangSwitch({ lang, setLang }: { lang: Lang; setLang: (lang: Lang) => vo
     <select
       value={lang}
       onChange={(event) => setLang(event.target.value as Lang)}
-      className="h-9 rounded-full border border-line bg-sheet px-3 text-sm font-medium text-ink"
+      className="h-11 rounded-full border border-line bg-sheet px-3 text-sm font-medium text-ink"
       aria-label="Language"
     >
         <option value="en">English</option>
@@ -79,10 +94,13 @@ function TopLink({
   label: string;
   exact?: boolean;
 }) {
+  const path = useRouterState({ select: (state) => state.location.pathname });
+  const active = exact ? path === to : path === to || path.startsWith(`${to}/`);
   return (
     <Link
       to={to}
       activeOptions={{ exact: exact ?? false }}
+      aria-current={active ? "page" : undefined}
       className="rounded-full px-3 py-2 text-sm font-medium text-muted transition-colors data-[status=active]:bg-indigo-soft data-[status=active]:text-indigo"
     >
       {label}
@@ -101,10 +119,13 @@ function Tab({
   icon: typeof Search;
   exact?: boolean;
 }) {
+  const path = useRouterState({ select: (state) => state.location.pathname });
+  const active = exact ? path === to : path === to || path.startsWith(`${to}/`);
   return (
     <Link
       to={to}
       activeOptions={{ exact: exact ?? false }}
+      aria-current={active ? "page" : undefined}
       className="flex h-16 flex-col items-center justify-center gap-1 text-xs font-medium text-muted data-[status=active]:text-indigo"
     >
       <Icon className="size-5" aria-hidden />

@@ -13,7 +13,7 @@ const copy = {
   en: {
     kicker: "For traders",
     title: "How to put your stall on Oja",
-    lede: "Add the stall below. Your mobile number is the registration. It stays on this phone. No email and no password.",
+    lede: "Sign up with your email. A phone number is optional and is not the account.",
     steps: [
       {
         n: "1",
@@ -81,7 +81,7 @@ const copy = {
   pg: {
     kicker: "For traders",
     title: "How you go put your stall for Oja",
-    lede: "Add the stall for down. Your phone number na the registration. E dey this phone. No email, no password.",
+    lede: "Sign up with your email. Phone number no be the account.",
     steps: [
       {
         n: "1",
@@ -157,6 +157,9 @@ function StartPage() {
       <p className="text-sm font-medium text-indigo">{text.kicker}</p>
       <h1 className="mt-1 font-display text-4xl text-ink">{text.title}</h1>
       <p className="mt-2 text-muted">{text.lede}</p>
+      <Link to="/join" className="mt-3 inline-flex h-11 items-center text-sm font-semibold text-clay">
+        Sign up
+      </Link>
       <AddStall lang={lang} />
       <Link to="/open" className="mt-3 inline-flex text-sm font-semibold text-indigo">
         {lang === "pg" ? "Advertise, export, or partner." : "Advertise, export, or partner."}

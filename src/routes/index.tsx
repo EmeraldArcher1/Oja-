@@ -86,7 +86,7 @@ function HomePage() {
         </ol>
         <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1">
           <Link to="/join" className="inline-flex h-11 items-center text-sm font-semibold text-clay">
-            Register a business
+            Sign up
           </Link>
           <Link to="/login" className="inline-flex h-11 items-center text-sm font-semibold text-indigo">
             Log in

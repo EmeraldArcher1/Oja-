@@ -46,8 +46,24 @@ function JoinPage() {
       <h1 className="font-display text-4xl text-ink">{text.joinTitle}</h1>
       <p className="mt-2 text-muted">{text.joinLede}</p>
       <form onSubmit={(event) => void submit(event)} className="mt-4 grid gap-3">
-        <Field label={text.email} value={email} onChange={setEmail} type="email" />
-        <Field label={text.password} value={password} onChange={setPassword} type="password" />
+        <Field
+          label={text.email}
+          value={email}
+          onChange={setEmail}
+          type="email"
+          placeholder="name@email.com"
+          autoComplete="email"
+          required
+        />
+        <p className="-mt-2 text-sm text-muted">This email is how you sign up and log in.</p>
+        <Field
+          label={text.password}
+          value={password}
+          onChange={setPassword}
+          type="password"
+          autoComplete="new-password"
+          required
+        />
         <Field label={text.business} value={name} onChange={setName} />
         <Field label={text.yourName} value={trader} onChange={setTrader} />
         <label className="text-sm font-medium">
@@ -79,7 +95,7 @@ function JoinPage() {
           </select>
         </label>
         <Field label={text.stallCode} value={stallCode} onChange={setStallCode} placeholder="BA01" />
-        <Field label={text.phone} value={phone} onChange={setPhone} placeholder="0803 000 0000" />
+        <Field label={`${text.phone} (optional)`} value={phone} onChange={setPhone} placeholder="0803 000 0000" type="tel" autoComplete="tel" />
         <p className="-mt-2 text-sm text-muted">{text.phoneNote}</p>
         <Field label={text.about} value={about} onChange={setAbout} />
         {error ? <p className="text-sm font-medium text-clay">{error}</p> : null}
@@ -104,12 +120,16 @@ function Field({
   onChange,
   type = "text",
   placeholder,
+  autoComplete,
+  required,
 }: {
   label: string;
   value: string;
   onChange: (value: string) => void;
   type?: string;
   placeholder?: string;
+  autoComplete?: string;
+  required?: boolean;
 }) {
   return (
     <label className="text-sm font-medium">
@@ -117,6 +137,8 @@ function Field({
       <input
         type={type}
         value={value}
+        required={required}
+        autoComplete={autoComplete}
         placeholder={placeholder}
         onChange={(event) => onChange(event.target.value)}
         className="mt-1 h-12 w-full rounded-2xl border border-line bg-sheet px-3 text-base outline-none focus-visible:border-indigo"

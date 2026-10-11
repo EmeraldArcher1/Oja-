@@ -100,7 +100,9 @@ export const registerBusiness = createServerFn({ method: "POST" })
       return { ok: false, error: "Choose what you sell." };
     }
     if (!/^[A-Z0-9-]{2,12}$/.test(stallCode)) return { ok: false, error: "Stall code should look like BA01." };
-    if (!phone) return { ok: false, error: "Use a Nigerian mobile. Buyers will not see it unless you publish it." };
+    if (data.phone.trim() && !phone) {
+      return { ok: false, error: "Use a Nigerian mobile, or leave it blank. You sign up with your email." };
+    }
     const sql = await getSql();
     const existing = await sql<{ id: string }>`select id from market_accounts where email = ${email}`;
     if (existing.length > 0) return { ok: false, error: "That email is already registered." };

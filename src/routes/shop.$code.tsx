@@ -40,7 +40,7 @@ function ShopPage() {
       <main className="mx-auto max-w-xl px-4 py-8">
         <h1 className="font-display text-4xl text-ink">No registered business uses {code}.</h1>
         <Link to="/join" className="mt-4 inline-flex h-12 items-center font-semibold text-indigo">
-          Register it
+          Sign up
         </Link>
       </main>
     );

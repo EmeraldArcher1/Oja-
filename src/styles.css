@@ -8,7 +8,7 @@
   --color-paper: #f3eee4;
   --color-sheet: #fffdf8;
   --color-ink: #1c1915;
-  --color-muted: #6f675e;
+  --color-muted: #5c554c;
   --color-line: #e4d9c8;
   --color-indigo: #1a3a5c;
   --color-indigo-soft: #e6eef5;
@@ -45,6 +45,29 @@
   button:not(:disabled),
   [role="button"]:not(:disabled) {
     cursor: pointer;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-indigo);
+    outline-offset: 3px;
+  }
+
+  .skip-link {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: 50;
+    transform: translateY(-150%);
+    border-radius: 999px;
+    background: var(--color-indigo);
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-sheet);
+  }
+
+  .skip-link:focus {
+    transform: none;
   }
 }
 
