@@ -1,8 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState, type FormEvent } from "react";
-import { marketById, markets } from "@/data/lagos";
-import { categories, stallByCode, type CategoryId, type Stall } from "@/data/market";
-import { tidyPhone } from "@/data/trade";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMarket } from "@/lib/market-store";
 
 export const Route = createFileRoute("/start")({
@@ -162,7 +158,9 @@ function StartPage() {
       <Link to="/join" className="mt-3 inline-flex h-11 items-center text-sm font-semibold text-clay">
         Sign up
       </Link>
-      <AddStall lang={lang} />
+      <p className="mt-4 rounded-2xl border border-line bg-sheet px-4 py-4 text-sm text-ink">
+        A stall is added by signing up. A form on this phone does not register a business.
+      </p>
       <Link to="/open" className="mt-3 inline-flex text-sm font-semibold text-indigo">
         {lang === "pg" ? "Advertise, export, or partner." : "Advertise, export, or partner."}
       </Link>
@@ -236,175 +234,5 @@ function StartPage() {
         {text.stall}
       </Link>
     </main>
-  );
-}
-
-function freshCode(marketId: string): string {
-  const prefix = marketId.replace(/[^a-z0-9]/gi, "").slice(0, 2).toUpperCase() || "OJ";
-  for (let n = 1; n < 90; n += 1) {
-    const code = `${prefix}${String(n).padStart(2, "0")}`;
-    if (!stallByCode(code)) return code;
-  }
-  return `${prefix}${Date.now().toString(36).slice(-3).toUpperCase()}`;
-}
-
-function AddStall({ lang }: { lang: "en" | "pg" | "yo" | "ig" | "ha" }) {
-  const navigate = useNavigate();
-  const registerStall = useMarket((state) => state.registerStall);
-  const [marketId, setMarketId] = useState("balogun");
-  const [business, setBusiness] = useState("");
-  const [trader, setTrader] = useState("");
-  const [phone, setPhone] = useState("");
-  const [category, setCategory] = useState<CategoryId>("food");
-  const [goods, setGoods] = useState("");
-  const [price, setPrice] = useState("");
-  const [error, setError] = useState("");
-  const pg = lang === "pg";
-
-  function submit(event: FormEvent) {
-    event.preventDefault();
-    const tidy = tidyPhone(phone);
-    const amount = Number(price.replace(/,/g, ""));
-    if (business.trim().length < 2) {
-      setError(pg ? "Add the stall name." : "Add the stall name.");
-      return;
-    }
-    if (trader.trim().length < 2) {
-      setError(pg ? "Add your name." : "Add your name.");
-      return;
-    }
-    if (!tidy) {
-      setError(pg ? "Use Nigerian number, like 0803 000 0000." : "Use a Nigerian mobile, like 0803 000 0000.");
-      return;
-    }
-    if (goods.trim().length < 2 || !Number.isFinite(amount) || amount <= 0) {
-      setError(pg ? "Add one product and the price." : "Add one product and a price in naira.");
-      return;
-    }
-    const market = marketById(marketId);
-    const code = freshCode(marketId);
-    const stallNo = Number(code.replace(/\D/g, "").slice(-2)) || 1;
-    const name = business.trim();
-    const person = trader.trim();
-    const item = goods.trim();
-    const stall: Stall = {
-      id: code.toLowerCase(),
-      code,
-      marketId,
-      block: market.lanes ? "block-c" : marketId,
-      row: 1,
-      stallNo,
-      business: name,
-      trader: person,
-      category,
-      blurb: `${name} at ${market.name}.`,
-      keywords: [name, person, item, market.name, marketId],
-      languages: ["English", "Pidgin"],
-      hours: "Mon–Sat, 8am–6pm",
-      photo: market.photo,
-      whatsapp: tidy,
-      verified: "sample",
-      lat: market.lat + 0.0003,
-      lng: market.lng + 0.00025,
-      shutter: {
-        en: `Ask for ${person} and quote ${code}.`,
-        pg: `Ask for ${person} and quote ${code}.`,
-      },
-      catalogue: [{ name: item, price: Math.round(amount), unit: "piece" }],
-      note: {
-        name: "Sample",
-        text: "Added on this phone. Not a verified business.",
-      },
-    };
-    registerStall(stall);
-    void navigate({ to: "/stall/$code", params: { code }, hash: "owner" });
-  }
-
-  return (
-    <form onSubmit={submit} className="mt-4 rounded-2xl border border-line bg-sheet p-4">
-      <h2 className="font-display text-3xl text-ink">{pg ? "Add your stall" : "Add your stall"}</h2>
-      <label className="mt-3 block text-sm font-medium">
-        {pg ? "Market" : "Market"}
-        <select
-          value={marketId}
-          onChange={(event) => setMarketId(event.target.value)}
-          className="mt-1 h-12 w-full rounded-2xl border border-line bg-paper px-3 text-base"
-        >
-          {markets.map((market) => (
-            <option key={market.id} value={market.id}>
-              {market.name}
-            </option>
-          ))}
-        </select>
-      </label>
-      <label className="mt-3 block text-sm font-medium">
-        {pg ? "Stall name" : "Stall name"}
-        <input
-          value={business}
-          onChange={(event) => setBusiness(event.target.value.slice(0, 48))}
-          placeholder={pg ? "Mama Ngozi Provisions" : "Mama Ngozi Provisions"}
-          className="mt-1 h-12 w-full rounded-2xl border border-line bg-paper px-3 text-base outline-none focus-visible:border-indigo"
-        />
-      </label>
-      <label className="mt-3 block text-sm font-medium">
-        {pg ? "Your name" : "Your name"}
-        <input
-          value={trader}
-          onChange={(event) => setTrader(event.target.value.slice(0, 40))}
-          className="mt-1 h-12 w-full rounded-2xl border border-line bg-paper px-3 text-base outline-none focus-visible:border-indigo"
-        />
-      </label>
-      <label className="mt-3 block text-sm font-medium">
-        {pg ? "Your mobile" : "Your mobile"}
-        <input
-          value={phone}
-          onChange={(event) => setPhone(event.target.value)}
-          inputMode="tel"
-          placeholder="0803 000 0000"
-          className="mt-1 h-12 w-full rounded-2xl border border-line bg-paper px-3 text-base outline-none focus-visible:border-indigo"
-        />
-      </label>
-      <label className="mt-3 block text-sm font-medium">
-        {pg ? "Wetin you dey sell" : "What you sell"}
-        <select
-          value={category}
-          onChange={(event) => setCategory(event.target.value as CategoryId)}
-          className="mt-1 h-12 w-full rounded-2xl border border-line bg-paper px-3 text-base"
-        >
-          {categories.map((item) => (
-            <option key={item.id} value={item.id}>
-              {item.label}
-            </option>
-          ))}
-        </select>
-      </label>
-      <div className="mt-3 grid grid-cols-[1fr_7rem] gap-2">
-        <input
-          value={goods}
-          onChange={(event) => setGoods(event.target.value.slice(0, 40))}
-          placeholder={pg ? "Product" : "Product"}
-          className="h-12 rounded-2xl border border-line bg-paper px-3 text-base outline-none focus-visible:border-indigo"
-        />
-        <input
-          value={price}
-          onChange={(event) => setPrice(event.target.value)}
-          inputMode="numeric"
-          placeholder={pg ? "Price" : "Price"}
-          className="h-12 rounded-2xl border border-line bg-paper px-3 text-base outline-none focus-visible:border-indigo"
-        />
-      </div>
-      {error ? <p className="mt-2 text-sm font-medium text-clay">{error}</p> : null}
-      <button
-        type="submit"
-        className="mt-3 h-12 w-full rounded-2xl bg-clay text-sm font-semibold text-sheet"
-      >
-        {pg ? "Add the stall" : "Add the stall"}
-      </button>
-      <p className="mt-2 text-sm text-muted">
-        {pg
-          ? "E go get a stall code. E still be sample listing, no be verified business."
-          : "You get a stall code. It stays a sample listing, not a verified business."}
-      </p>
-    </form>
   );
 }

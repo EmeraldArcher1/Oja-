@@ -1,4 +1,5 @@
 import { extraStalls, marketById } from "@/data/lagos";
+import { phrases } from "@/data/phrases";
 
 export type Lang = "en" | "pg" | "yo" | "ig" | "ha";
 
@@ -1075,7 +1076,8 @@ export function categoryLabel(id: CategoryId): string {
 
 export function t(copy: Copy, lang: Lang): string {
   if (lang === "pg") return copy.pg;
-  return copy.en;
+  if (lang === "en") return copy.en;
+  return phrases[copy.en]?.[lang] ?? copy.en;
 }
 
 export function naira(amount: number): string {

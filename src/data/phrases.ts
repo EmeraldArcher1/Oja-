@@ -1,0 +1,32 @@
+import type { Lang } from "@/data/market";
+
+/** Stall and walk lines. Product names stay in English. */
+export const phrases: Record<string, Partial<Record<Lang, string>>> = {
+  "Walk me there": { yo: "Rìn mọ́ ibẹ̀", ig: "Duga m n’ebe ahụ", ha: "Kai ni can" },
+  "You are at": { yo: "O wà ní", ig: "Ị nọ na", ha: "Kana nan" },
+  "I see it": { yo: "Mo rí i", ig: "Ahụrụ m ya", ha: "Na gan shi" },
+  "I’m at the stall": { yo: "Mo dé ibi ọjà", ig: "A bia m n’ụlọ ahịa", ha: "Na isa rumfa" },
+  Back: { yo: "Padà", ig: "Laghachi", ha: "Koma" },
+  Saved: { yo: "Tí a pamọ́", ig: "E chekwara", ha: "An ajiye" },
+  Search: { yo: "Wá", ig: "Chọọ", ha: "Nemo" },
+  Find: { yo: "Wá", ig: "Chọọ", ha: "Nemo" },
+  Stalls: { yo: "Àwọn ọjà", ig: "Ụlọ ahịa", ha: "Rumfuna" },
+  Catalogue: { yo: "Àkójọ ọjà", ig: "Ndepụta", ha: "Jerin kaya" },
+  "Wetin dem get": { yo: "Àkójọ ọjà", ig: "Ndepụta", ha: "Jerin kaya" },
+  Add: { yo: "Fi kún", ig: "Tinye", ha: "Ƙara" },
+  "Send on WhatsApp": { yo: "Fi ránṣẹ́ ní WhatsApp", ig: "Zipu na WhatsApp", ha: "Aika ta WhatsApp" },
+  Total: { yo: "Àpapọ̀", ig: "Mkpokọta", ha: "Jimla" },
+  "How to spot the stall": { yo: "Bí a ṣe lè rí ọjà", ig: "Otu a ga-esi hụ ụlọ ahịa", ha: "Yadda ake gane rumfa" },
+  "Show on the map": { yo: "Fi hàn lórí máàpù", ig: "Gosi na map", ha: "Nuna a taswira" },
+  "Note for the trader": { yo: "Ìránṣẹ́ fún oníṣòwò", ig: "Ozi nye onye na-ere", ha: "Sako ga mai sayarwa" },
+  "Sample buyer note": { yo: "Àkọsílẹ̀ àpẹẹrẹ", ig: "Ihe edere dị ka ihe atụ", ha: "Bayani na gwaji" },
+  "WhatsApp shop": { yo: "Ilé ìtajà WhatsApp", ig: "Ụlọ ahịa WhatsApp", ha: "Shagon WhatsApp" },
+  "On the way": { yo: "Lójú ọ̀nà", ig: "N’ụzọ", ha: "A hanya" },
+  "Where are you now?": { yo: "Níbo ni o wà báyìí?", ig: "Ebee ka ị nọ ugbu a?", ha: "Ina kake yanzu?" },
+  Markets: { yo: "Ọjà", ig: "Ahịa", ha: "Kasuwanni" },
+  Sell: { yo: "Ta", ig: "Ree", ha: "Sayar" },
+  "Sign up": { yo: "Forúkọsílẹ̀", ig: "Debanye", ha: "Yi rijista" },
+  Orders: { yo: "Àwọn ìbéèrè", ig: "Iwu", ha: "Oda" },
+  Open: { yo: "Ṣí", ig: "Mepee", ha: "Buɗe" },
+  "min walk": { yo: "ìṣẹ́jú rírìn", ig: "nkeji ije", ha: "minti tafiya" },
+};

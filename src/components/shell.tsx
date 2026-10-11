@@ -37,11 +37,11 @@ export function Shell({ children }: { children: React.ReactNode }) {
           <div className="flex items-center gap-2">
             <nav className="hidden items-center gap-1 lg:flex" aria-label="Pages">
               <TopLink to="/" exact label={t(ui.search, lang)} />
-              <TopLink to="/markets" label="Markets" />
-              <TopLink to="/start" label="Sell" />
-              <TopLink to="/join" label="Sign up" />
-              <TopLink to="/orders" label="Orders" />
-              <TopLink to="/open" label="Open" />
+              <TopLink to="/markets" label={t({ en: "Markets", pg: "Markets" }, lang)} />
+              <TopLink to="/start" label={t({ en: "Sell", pg: "Sell" }, lang)} />
+              <TopLink to="/join" label={t({ en: "Sign up", pg: "Sign up" }, lang)} />
+              <TopLink to="/orders" label={t({ en: "Orders", pg: "Orders" }, lang)} />
+              <TopLink to="/open" label={t({ en: "Open", pg: "Open" }, lang)} />
               <TopLink to="/map" label={t(ui.map, lang)} />
               <TopLink to="/saved" label={t(ui.saved, lang)} />
             </nav>
@@ -57,9 +57,9 @@ export function Shell({ children }: { children: React.ReactNode }) {
         <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-sheet lg:hidden" aria-label="Main">
           <div className="mx-auto grid max-w-lg grid-cols-5">
             <Tab to="/" exact icon={Search} label={t(ui.search, lang)} />
-            <Tab to="/markets" icon={Store} label="Markets" />
-            <Tab to="/start" icon={Tag} label="Sell" />
-            <Tab to="/orders" icon={Bike} label="Orders" />
+            <Tab to="/markets" icon={Store} label={t({ en: "Markets", pg: "Markets" }, lang)} />
+            <Tab to="/start" icon={Tag} label={t({ en: "Sell", pg: "Sell" }, lang)} />
+            <Tab to="/orders" icon={Bike} label={t({ en: "Orders", pg: "Orders" }, lang)} />
             <Tab to="/saved" icon={Bookmark} label={t(ui.saved, lang)} />
           </div>
         </nav>

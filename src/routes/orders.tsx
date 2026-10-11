@@ -22,7 +22,7 @@ export const Route = createFileRoute("/orders")({
 const stepName: Record<Job["status"], string> = {
   sent: "Waiting on the trader",
   accepted: "Ready for collection",
-  collected: "With Posh9ja",
+  collected: "Noted on this phone",
   delivered: "Delivered",
   cancelled: "Cancelled",
 };
@@ -141,7 +141,7 @@ function DeskJob({
           <span className="block font-semibold tabular-nums">{naira(job.goods)} goods</span>
           <span className="block text-muted">Proposed 2% {naira(job.token)} · not charged</span>
           <span className="block text-muted">Trader keeps {naira(traderKeeps(job.goods, job.token))}</span>
-          <span className="block text-muted">{fee > 0 ? `Posh9ja ${naira(fee)}` : "No delivery fee"}</span>
+          <span className="block text-muted">{fee > 0 ? "Old delivery quote. Not a booking." : "No delivery"}</span>
         </p>
       </div>
       <ul className="mt-3 text-sm">

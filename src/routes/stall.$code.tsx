@@ -17,7 +17,6 @@ import {
   waLink,
 } from "@/data/market";
 import {
-  deliveryQuote,
   listingLabel,
   localPhone,
   ojaToken,
@@ -57,8 +56,6 @@ function StallPage() {
   const [note, setNote] = useState("");
   const [buyerName, setBuyerName] = useState("");
   const [buyerPhone, setBuyerPhone] = useState("");
-  const [dropoff, setDropoff] = useState("");
-  const [mode, setMode] = useState<"pickup" | "rider">("rider");
   const [formError, setFormError] = useState("");
   const [seeded, setSeeded] = useState(false);
 
@@ -150,15 +147,11 @@ function StallPage() {
   async function placeOrder() {
     const buyer = tidyPhone(buyerPhone);
     if (!buyer) {
-      setFormError("Enter the buyer’s Nigerian mobile so the trader and rider can call back.");
+      setFormError("Enter a Nigerian mobile so the trader can call back.");
       return;
     }
     if (buyerName.trim().length < 2) {
       setFormError("Add the name the trader should ask for.");
-      return;
-    }
-    if (mode === "rider" && dropoff.trim().length < 4) {
-      setFormError("Where should the rider drop the order? A street or an estate is enough.");
       return;
     }
     const createdAt = Date.now();
@@ -171,12 +164,12 @@ function StallPage() {
       note,
       buyerName: buyerName.trim(),
       buyerPhone: buyer,
-      dropoff: mode === "rider" ? dropoff.trim() : "",
-      mode,
+      dropoff: "",
+      mode: "pickup",
       status: "sent",
       goods: total,
       token,
-      deliveryFee: deliveryQuote(mode),
+      deliveryFee: 0,
       createdAt,
     };
     placeJob(job);
@@ -403,39 +396,7 @@ function StallPage() {
             className="mt-1 h-12 w-full rounded-2xl border border-line bg-sheet px-3 text-base outline-none focus-visible:border-indigo"
           />
         </label>
-        <div className="mt-3 grid grid-cols-2 gap-2">
-          <button
-            type="button"
-            onClick={() => setMode("rider")}
-            className={cn(
-              "h-11 rounded-full border text-sm font-semibold",
-              mode === "rider" ? "border-indigo bg-indigo text-sheet" : "border-line bg-sheet",
-            )}
-          >
-            Posh9ja rider
-          </button>
-          <button
-            type="button"
-            onClick={() => setMode("pickup")}
-            className={cn(
-              "h-11 rounded-full border text-sm font-semibold",
-              mode === "pickup" ? "border-indigo bg-indigo text-sheet" : "border-line bg-sheet",
-            )}
-          >
-            I’ll pick up
-          </button>
-        </div>
-        {mode === "rider" ? (
-          <label className="mt-3 block">
-            <span className="text-sm font-medium text-ink">Where Posh9ja should drop it</span>
-            <input
-              value={dropoff}
-              onChange={(event) => setDropoff(event.target.value.slice(0, 120))}
-              placeholder="Estate, street, or junction"
-              className="mt-1 h-12 w-full rounded-2xl border border-line bg-sheet px-3 text-base outline-none focus-visible:border-indigo"
-            />
-          </label>
-        ) : null}
+        <p className="mt-3 text-sm text-muted">Pickup only. Oja does not book a rider or quote a delivery fee.</p>
         <label className="mt-3 block">
           <span className="text-sm font-medium text-ink">{t(ui.orderNote, lang)}</span>
           <textarea
@@ -455,11 +416,8 @@ function StallPage() {
         )}
         {formError ? <p className="mt-2 text-sm font-medium text-clay">{formError}</p> : null}
         <p className="mt-2 text-sm text-muted">
-          Sample price. Stock is not live. A 2% fee is proposed and is not charged. The trader’s number
+          Sample price. Stock is not live. No fee is charged. No rider is booked. The trader’s number
           stays hidden unless they publish it.
-          {mode === "rider"
-            ? ` Posh9ja quotes ${naira(deliveryQuote("rider"))} separately, and that quote is not a booking.`
-            : " Pickup has no delivery fee."}
         </p>
       </section>
 

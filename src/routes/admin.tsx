@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
 import { naira } from "@/data/market";
-import { listPlans, updatePlanPrice } from "@/lib/market/api";
+import { listOpenRequests, listPlans, updatePlanPrice } from "@/lib/market/api";
 
 export const Route = createFileRoute("/admin")({
   component: AdminPage,
@@ -13,6 +13,9 @@ function AdminPage() {
   const [price, setPrice] = useState("");
   const [adminKey, setAdminKey] = useState("");
   const [message, setMessage] = useState("");
+  const [requests, setRequests] = useState<
+    { id: string; kind: string; name: string; phone: string; stall_code: string; subject: string; note: string }[]
+  >([]);
 
   useEffect(() => {
     void listPlans().then(setPlans);
@@ -58,6 +61,38 @@ function AdminPage() {
         </button>
       </form>
       {message ? <p className="mt-3 text-sm">{message}</p> : null}
+      <button
+        type="button"
+        onClick={() =>
+          void listOpenRequests({ data: { adminKey } }).then((result) => {
+            if (!result.ok) {
+              setMessage(result.error);
+              setRequests([]);
+              return;
+            }
+            setRequests(result.data);
+            setMessage(result.data.length === 0 ? "No requests yet." : `${result.data.length} requests.`);
+          })
+        }
+        className="mt-3 h-12 rounded-2xl border border-line text-sm font-semibold"
+      >
+        Load advertising, export, and partner requests
+      </button>
+      <ul className="mt-4 grid gap-2">
+        {requests.map((item) => (
+          <li key={item.id} className="rounded-2xl border border-line bg-sheet px-3 py-3 text-sm">
+            <p className="font-semibold">
+              {item.kind} · {item.name}
+            </p>
+            <p className="text-muted">
+              {item.phone}
+              {item.stall_code ? ` · ${item.stall_code}` : ""}
+            </p>
+            <p className="mt-1">{item.subject}</p>
+            {item.note ? <p className="mt-1 text-muted">{item.note}</p> : null}
+          </li>
+        ))}
+      </ul>
     </main>
   );
 }

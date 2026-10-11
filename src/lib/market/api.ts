@@ -228,6 +228,44 @@ export const updatePlanPrice = createServerFn({ method: "POST" })
     return { ok: true, data: { priceNaira: price } };
   });
 
+export const saveOpenRequest = createServerFn({ method: "POST" })
+  .inputValidator((data: { kind: string; name: string; phone: string; stallCode: string; subject: string; note: string }) => data)
+  .handler(async ({ data }): Promise<Result<{ id: string }>> => {
+    if (data.kind !== "ad" && data.kind !== "export" && data.kind !== "partner") {
+      return { ok: false, error: "Choose advertise, export, or partner." };
+    }
+    const name = data.name.trim();
+    const phone = data.phone.trim();
+    if (name.length < 2 || phone.length < 8) return { ok: false, error: "Add a name and a phone number." };
+    const sql = await getSql();
+    const id = newId("req");
+    await sql`
+      insert into open_requests (id, kind, name, phone, stall_code, subject, note)
+      values (
+        ${id}, ${data.kind}, ${name.slice(0, 80)}, ${phone.slice(0, 20)},
+        ${data.stallCode.trim().toUpperCase().slice(0, 16)},
+        ${data.subject.trim().slice(0, 160)},
+        ${data.note.trim().slice(0, 800)}
+      )
+    `;
+    return { ok: true, data: { id } };
+  });
+
+export const listOpenRequests = createServerFn({ method: "POST" })
+  .inputValidator((data: { adminKey: string }) => data)
+  .handler(async ({ data }) => {
+    const expected = process.env.OJA_ADMIN_KEY ?? "";
+    if (expected.length < 16 || data.adminKey !== expected) {
+      return { ok: false as const, error: "That administrator key was refused." };
+    }
+    const sql = await getSql();
+    const rows = await sql<{ id: string; kind: string; name: string; phone: string; stall_code: string; subject: string; note: string; created_at: string }>`
+      select id, kind, name, phone, stall_code, subject, note, created_at::text
+      from open_requests order by created_at desc limit 50
+    `;
+    return { ok: true as const, data: rows };
+  });
+
 export const listPlans = createServerFn({ method: "GET" }).handler(async () => {
   const sql = await getSql();
   return sql<{ code: string; name: string; price_naira: number; purchasable: boolean; note: string }>`

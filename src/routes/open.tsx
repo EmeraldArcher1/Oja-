@@ -3,6 +3,7 @@ import { useState, type FormEvent } from "react";
 import { z } from "zod";
 import { leadText, loosePhone, type Lead, type LeadKind } from "@/data/leads";
 import { tidyPhone } from "@/data/trade";
+import { saveOpenRequest } from "@/lib/market/api";
 import { useMarket } from "@/lib/market-store";
 
 const searchSchema = z.object({
@@ -21,7 +22,7 @@ const copy = {
   en: {
     kicker: "Open desk",
     title: "Advertise, export, or partner",
-    lede: "Send a request. Oja saves it on this phone. Nothing here starts a live advert, a shipment, or a bank account.",
+    lede: "Send a request. Oja stores it for the desk. Nothing here starts a live advert, a shipment, or a bank account.",
     ad: "Advertise",
     export: "Export",
     partner: "Partner",
@@ -34,17 +35,17 @@ const copy = {
     pitch: "What do you want to offer traders?",
     note: "Note",
     save: "Save the request",
-    saved: "Saved on this phone",
+    saved: "Saved for the Oja desk",
     copy: "Copy",
     copied: "Copied",
     empty: "No requests yet.",
-    list: "Requests on this phone",
+    list: "Also kept on this phone",
     warn: "A financial partner is not approved by this form. Oja does not take deposits or move money.",
   },
   pg: {
     kicker: "Open desk",
     title: "Advertise, export, or partner",
-    lede: "Send request. Oja go save am for this phone. Nothing here go start live advert, shipment, or bank account.",
+    lede: "Send request. Oja go store am for desk. Nothing here go start live advert, shipment, or bank account.",
     ad: "Advertise",
     export: "Export",
     partner: "Partner",
@@ -57,7 +58,7 @@ const copy = {
     pitch: "Wetin you wan offer traders?",
     note: "Note",
     save: "Save the request",
-    saved: "E don save for this phone",
+    saved: "E don save for Oja desk",
     copy: "Copy",
     copied: "Copied",
     empty: "No request yet.",
@@ -122,7 +123,7 @@ function LeadForm({ kind, code }: { kind: LeadKind; code: string }) {
   const [error, setError] = useState("");
   const [done, setDone] = useState(false);
 
-  function submit(event: FormEvent) {
+  async function submit(event: FormEvent) {
     event.preventDefault();
     const local = kind === "export" ? loosePhone(phone) : tidyPhone(phone);
     if (name.trim().length < 2) {
@@ -152,6 +153,20 @@ function LeadForm({ kind, code }: { kind: LeadKind; code: string }) {
       createdAt: Date.now(),
     };
     addLead(lead);
+    const saved = await saveOpenRequest({
+      data: {
+        kind,
+        name: lead.name,
+        phone: lead.phone,
+        stallCode: lead.code,
+        subject: lead.subject,
+        note: lead.note,
+      },
+    });
+    if (!saved.ok) {
+      setError(saved.error);
+      return;
+    }
     setDone(true);
     setError("");
     setNote("");
@@ -160,7 +175,7 @@ function LeadForm({ kind, code }: { kind: LeadKind; code: string }) {
   const subjectLabel = kind === "ad" ? text.offer : kind === "export" ? text.goods : text.pitch;
 
   return (
-    <form onSubmit={submit} className="mt-4 rounded-2xl border border-line bg-sheet p-4">
+    <form onSubmit={(event) => void submit(event)} className="mt-4 rounded-2xl border border-line bg-sheet p-4">
       <label className="block text-sm font-medium">
         {kind === "partner" ? text.company : text.name}
         <input

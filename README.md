@@ -6,7 +6,7 @@ This is not a live marketplace. Sample stalls are examples. Registration does no
 
 ## Launch
 
-Not ready for an official launch. The Balogun stalls are samples. Payments, rider booking, CAC, and NAFDAC are not connected. A public launch would present examples as shops.
+Not ready for an official launch. The Balogun stalls are samples. Payments, rider booking, CAC, and NAFDAC are not connected. A delivery quote is no longer shown. Advertising, export, and partner requests are stored for the administrator desk. A public launch would still present examples as shops.
 
 POSH9JA EXPORT AND LOGISTICS is listed at `/posh9ja` as the founder’s company, with the office, email, and phone numbers the business already publishes. It is not verified, and it is not a Balogun stall.
 
