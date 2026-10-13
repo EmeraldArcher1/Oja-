@@ -46,12 +46,11 @@ export function VoiceNav() {
   const navigate = useNavigate();
   const [listening, setListening] = useState(false);
   const [note, setNote] = useState("");
+  const [canHear, setCanHear] = useState(false);
   const heard = useRef<Rec | null>(null);
-  const canHear =
-    typeof window !== "undefined" &&
-    ("SpeechRecognition" in window || "webkitSpeechRecognition" in window);
 
   useEffect(() => {
+    setCanHear("SpeechRecognition" in window || "webkitSpeechRecognition" in window);
     return () => {
       heard.current?.abort();
       if ("speechSynthesis" in window) window.speechSynthesis.cancel();

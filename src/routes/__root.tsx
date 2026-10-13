@@ -15,24 +15,6 @@ export const Route = createRootRoute({
         content:
           "Find a stall anywhere in Nigeria — spare parts, a warehouse, or the neighbourhood market — and send the order to the trader.",
       },
-      { property: "og:title", content: "Oja · Every market. One Nigeria." },
-      {
-        property: "og:description",
-        content:
-          "Find a stall anywhere in Nigeria — spare parts, a warehouse, or the neighbourhood market — and send the order to the trader.",
-      },
-      { property: "og:image", content: "/og.jpg" },
-      { property: "og:image:width", content: "1200" },
-      { property: "og:image:height", content: "630" },
-      { property: "og:image:alt", content: "Oja. Every market. One Nigeria." },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Oja · Every market. One Nigeria." },
-      {
-        name: "twitter:description",
-        content:
-          "Find a stall anywhere in Nigeria — spare parts, a warehouse, or the neighbourhood market — and send the order to the trader.",
-      },
-      { name: "twitter:image", content: "/og.jpg" },
       { name: "theme-color", content: "#1a3a5c" },
     ],
     links: [
