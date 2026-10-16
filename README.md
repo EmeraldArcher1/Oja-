@@ -4,6 +4,10 @@ The working pilot is Balogun Market. Other states and local governments are name
 
 This is not a live marketplace. Sample stalls are examples. Registration does not send the shop to buyers around the world.
 
+## POSH9JA Group of Companies ecosystem
+
+OJA is an approved ecosystem partner alongside POSH9JA EXPORT & LOGISTICS within the POSH9JA Group of Companies. LagosGo is the group's mobility product. This partnership is a coordinated product direction, not a claim that marketplace orders, payments, merchant verification or deliveries are live. See [ECOSYSTEM_PARTNERSHIP.md](./ECOSYSTEM_PARTNERSHIP.md) for integration rules and release gates.
+
 ## Launch
 
 Not ready for an official launch. The Balogun stalls are samples. Payments, rider booking, CAC, and NAFDAC are not connected. A delivery quote is no longer shown. Advertising, export, and partner requests are stored for the administrator desk. A public launch would still present examples as shops.
